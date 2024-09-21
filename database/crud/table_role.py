@@ -3,7 +3,7 @@ from database import models
 
 
 def get_all():
-	"""Получить все данные из таблицы role"""
+	"""Получить все данные из таблицы Role"""
 	session = db.SessionLocal()
 	query = session.query(models.Role)
 
@@ -22,7 +22,7 @@ def add_employee_roles():
 		models.Role(role_id=1, title='Директор', description='Директор'),
 		models.Role(role_id=2, title='Администратор', description='Административный работник'),
 		models.Role(role_id=3, title='Учитель', description='Учитель'),
-		models.Role(role_id=5, title='Сотрудник', description='Другие сотрудники лицея')
+		models.Role(role_id=4, title='Сотрудник', description='Другие сотрудники лицея')
 	]
 	session.query(models.Role).delete()  # Очищаем таблицу
 	session.add_all(roles)  # Загружаем роли
