@@ -1,12 +1,20 @@
-from database import models
-from database import crud
+from aiogram import Bot
+from aiogram import types
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.dispatcher import Dispatcher
+
+from config_data import config
+import database
 from database.db import engine
 
+bot = Bot(config.TOKEN, parse_mode=types.ParseMode.HTML)
+dp = Dispatcher(bot, storage=MemoryStorage())
+
 # Создаем таблицы в бд
-models.Base.metadata.create_all(bind=engine)
+database.models.Base.metadata.create_all(bind=engine)
 
 # Добавляем роли сотрудников в таблицу бд
-crud.table_role.add_employee_roles()
+database.crud.table_role.add_employee_roles()
 
 # Загружаем сотрудников в бд
-crud.table_employee.load_employees()
+database.crud.table_employee.load_employees()

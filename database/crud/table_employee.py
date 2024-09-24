@@ -38,3 +38,9 @@ def add_employee(telegram_id: int, surname: str, name: str, middlename: str, rol
 	)
 	session.add(role)
 	session.commit()
+
+
+def get_employee_by_telegram_id(telegram_id: int):
+	session = db.SessionLocal()
+	query = session.query(models.Employee)
+	return query.filter(models.Employee.telegram_id == telegram_id).all()
