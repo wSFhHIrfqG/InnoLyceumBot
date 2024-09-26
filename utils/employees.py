@@ -13,6 +13,8 @@ def iter_employees():
 	for row in map(EmployeeRow._make, sheet.iter_rows(min_row=2, values_only=True)):
 		yield row
 
+	book.close()
+
 
 def get_employee_role_number(employee):
 	roles = {

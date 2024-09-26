@@ -26,3 +26,12 @@ class Employee(Base):
 	role_id = Column(Integer, ForeignKey('Role.role_id'), nullable=False)
 
 	about_role = relationship('Role', back_populates='role')
+
+
+class RegistarationRequest(Base):
+	__tablename__ = 'RegistrationRequest'
+
+	request_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
+	telegram_id = Column(Integer, nullable=False)
+	from_name = Column(VARCHAR(50), nullable=False)
+	from_username = Column(VARCHAR(50), nullable=False)
