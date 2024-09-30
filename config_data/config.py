@@ -11,4 +11,6 @@ SUPER_ADMIN_TELEGRAM_ID = int(os.getenv('SUPER_ADMIN_TELEGRAM_ID'))
 
 base_dir = os.path.dirname(os.path.dirname(__file__))
 DATABASE_URL = 'sqlite:///' + os.path.join(base_dir, 'database', os.getenv('DATABASE_NAME'))
+
 EMPLOYEE_DATA_FILE_PATH = os.path.join(base_dir, 'input', os.getenv('EMPLOYEE_DATA_FILENAME'))
+STUDENT_DATA_FILE_PATH = os.path.join(base_dir, 'input', os.getenv('STUDENT_DATA_FILENAME'))

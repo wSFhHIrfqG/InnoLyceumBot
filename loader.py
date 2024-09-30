@@ -18,3 +18,6 @@ database.crud.table_role.add_employee_roles()
 
 # Загружаем сотрудников в бд
 database.crud.table_employee.load_employees()
+
+# Добавляем учеников и классы в бд
+database.crud.table_student.load_students_and_classes()

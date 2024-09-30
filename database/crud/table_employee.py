@@ -13,8 +13,8 @@ def get_all():
 
 
 def load_employees():
-	for employee in utils.employees.iter_employees():
-		employee_role_number = utils.employees.get_employee_role_number(employee)
+	for employee in utils.parse_employees.iter_employees():
+		employee_role_number = utils.parse_employees.get_employee_role_number(employee)
 
 		if employee_role_number is not None:
 			surname, name, middlename = employee.fullname.split()
