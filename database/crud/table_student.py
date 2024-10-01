@@ -14,6 +14,10 @@ def get_all():
 
 
 def load_students_and_classes():
+	session = db.SessionLocal()
+	session.query(models.Student).delete()  # Очищаем таблицу
+	session.commit()
+
 	for student in utils.parse_students.iter_students():
 		student_initials = student.fullname.split()
 		surname = student_initials[0]
