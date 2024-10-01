@@ -14,15 +14,3 @@ def iter_employees():
 		yield row
 
 	book.close()
-
-
-def get_employee_role_number(employee):
-	roles = {
-		1: ['Директор', ],
-		2: ['Заместитель директора', ],
-		3: ['Учитель', ],
-		4: ['Заведующий библиотекой', ]
-	}
-	for number, roles in roles.items():
-		if employee.role in roles:
-			return number

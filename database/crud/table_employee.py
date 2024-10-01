@@ -1,5 +1,6 @@
 from database import db
 from database import models
+from database import crud
 import utils
 
 
@@ -14,17 +15,19 @@ def get_all():
 
 def load_employees():
 	for employee in utils.parse_employees.iter_employees():
-		employee_role_number = utils.parse_employees.get_employee_role_number(employee)
+		role = crud.table_role.get_role_by_title(employee.role)
 
-		if employee_role_number is not None:
+		if role is not None:
 			surname, name, middlename = employee.fullname.split()
 			add_employee(
 				telegram_id=employee.telegram_id,
 				surname=surname,
 				name=name,
 				middlename=middlename,
-				role_id=employee_role_number
+				role_id=role.role_id
 			)
+		else:
+			exit(f'Неизвестная роль: {employee.role}')
 
 
 def add_employee(telegram_id: int, surname: str, name: str, middlename: str, role_id: int):
