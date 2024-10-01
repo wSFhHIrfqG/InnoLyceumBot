@@ -13,7 +13,7 @@ def get_all():
 	return data
 
 
-def load_students_and_classes():
+def load_students():
 	session = db.SessionLocal()
 	session.query(models.Student).delete()  # Очищаем таблицу
 	session.commit()

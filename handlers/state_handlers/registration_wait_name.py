@@ -1,4 +1,4 @@
-from aiogram.dispatcher.filters import ChatTypeFilter, StateFilter, Text
+from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher import FSMContext
 from aiogram import types
 
