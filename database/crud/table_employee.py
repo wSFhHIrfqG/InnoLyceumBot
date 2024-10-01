@@ -14,6 +14,10 @@ def get_all():
 
 
 def load_employees():
+	session = db.SessionLocal()
+	session.query(models.Employee).delete()  # Очищаем таблицу
+	session.commit()
+
 	for employee in utils.parse_employees.iter_employees():
 		role = crud.table_role.get_role_by_title(employee.role)
 
