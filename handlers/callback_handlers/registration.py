@@ -5,6 +5,7 @@ from aiogram import types
 from loader import bot, dp
 from states.user_states import UserStates
 from database import crud
+import keyboards
 
 
 @dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='start_registration', state='*')
@@ -26,10 +27,10 @@ async def send_registration_request(call: types.CallbackQuery, state: FSMContext
 						   text_startswith='registration_request_accept', state='*')
 async def accept_registration_request(call: types.CallbackQuery, state: FSMContext):
 	request_id, request_sender_telegram_id = map(int, call.data.split(':')[1:])
-
-	await bot.delete_message(call.from_user.id, call.message.message_id)
-
+	await call.message.delete_reply_markup()
 	crud.table_registration_request.close_registration_request(request_id)
+	await call.message.reply('Запрос одобрен. Не забудьте добавить пользователя в таблицу, '
+							 'если еще не сделали этого и обновить данные в панели администратора.')
 	await bot.send_message(
 		request_sender_telegram_id,
 		'✅ Ваш запрос на регистрацию одобрен!\n\n'
@@ -45,4 +46,22 @@ async def cancel_registration_request(call: types.CallbackQuery, state: FSMConte
 	request_id, request_sender_telegram_id = map(int, call.data.split(':')[1:])
 	await call.message.delete_reply_markup()
 	crud.table_registration_request.close_registration_request(request_id)
-	await call.message.reply('Registration request closed', reply_markup=None)
+	await call.message.reply('Запрос отклонен')
+	await call.message.reply('Добавить пользователя в черный список?',
+							 reply_markup=keyboards.inline.registration.confirm_user_blocking(
+								 request_sender_telegram_id))
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+						   text_startswith='blocking_user_accept', state='*')
+async def block_user(call: types.CallbackQuery, state: FSMContext):
+	user_telegram_id = int(call.data.split(':')[1])
+	crud.table_blocked_user.block_user(user_telegram_id)
+	await bot.delete_message(call.from_user.id, call.message.message_id)
+	await call.message.reply_to_message.reply('🔏 Позьзователь заблокирован')
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+						   text_startswith='blocking_user_cancel', state='*')
+async def do_nothing(call: types.CallbackQuery, state: FSMContext):
+	await bot.delete_message(call.from_user.id, call.message.message_id)

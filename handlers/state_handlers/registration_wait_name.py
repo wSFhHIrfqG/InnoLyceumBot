@@ -12,6 +12,7 @@ from config_data import config
 @dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
 					state=UserStates.registration_wait_name)
 async def register_user(message: types.Message, state=FSMContext):
+	await state.set_state(UserStates.start)
 	request_id = crud.table_registration_request.add_registration_request(
 		telegram_id=message.from_user.id,
 		from_name=message.text,
@@ -30,7 +31,6 @@ async def register_user(message: types.Message, state=FSMContext):
 		text=f'📩 Получена заявка на регистрацию\n\n'
 			 f'<b>От:</b> {message.text}\n'
 			 f'<b>Профиль:</b> @{message.from_user.username}\n'
-			 f'<b>Telegram ID:</b> <code>{message.from_user.id}</code>\n\n'
-			 f'<i>Добавьте пользователя в таблицу или отклоните нежелательный запрос.</i>',
+			 f'<b>Telegram ID:</b> <code>{message.from_user.id}</code>\n\n',
 		reply_markup=keyboards.inline.registration.registration_request_markup(request_id, message)
 	)

@@ -57,3 +57,10 @@ class Student(Base):
 	class_id = Column(Integer, ForeignKey('Class.class_id'), nullable=False)
 
 	student = relationship('Class', back_populates='student_class')
+
+
+class BlockedUser(Base):
+	__tablename__ = 'BlockedUser'
+
+	blocked_user_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
+	telegram_id = Column(Integer, nullable=False, unique=True)

@@ -8,7 +8,7 @@ import keyboards
 
 
 @dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
-					state=UserStates.start)
+					state=UserStates.main_menu)
 async def admin(message: types.Message, state=FSMContext):
 	if message.text == '⚙️ Администрирование':
 		await bot.send_message(message.from_user.id, '▶️ Выберите действие',
