@@ -64,3 +64,11 @@ class BlockedUser(Base):
 
 	blocked_user_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	telegram_id = Column(Integer, nullable=False, unique=True)
+
+
+class AbsenceReason(Base):
+	__tablename__ = 'AbsenceReason'
+
+	reason_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
+	title = Column(VARCHAR(100), nullable=False)
+	description = Column(String, nullable=False)
