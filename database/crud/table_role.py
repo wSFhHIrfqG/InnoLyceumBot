@@ -11,7 +11,7 @@ def get_all():
 	return data
 
 
-def add_employee_roles():
+def load_employee_roles():
 	"""
 	Добавить все роли для сотрудников в таблицу role.
 	Используется один раз при запуске.

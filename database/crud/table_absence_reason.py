@@ -11,7 +11,7 @@ def get_all():
 	return data
 
 
-def add_reasons():
+def load_reasons():
 	"""
 	Добавить причины отсутствия в таблицу AbsenceReason.
 	Используется один раз при запуске.

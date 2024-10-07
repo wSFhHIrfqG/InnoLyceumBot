@@ -42,3 +42,9 @@ def add_student(surname: str, name: str, middlename: str | None, class_id: int):
 	)
 	session.add(student)
 	session.commit()
+
+
+def get_students_by_class(class_id: int):
+	session = db.SessionLocal()
+	query = session.query(models.Student)
+	return query.filter(models.Student.class_id == class_id).all()

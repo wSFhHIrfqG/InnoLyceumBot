@@ -2,6 +2,7 @@ from database import db
 from database import models
 from database import crud
 import utils
+from config_data import roles
 
 
 def get_all():
@@ -51,3 +52,9 @@ def get_employee_by_telegram_id(telegram_id: int):
 	session = db.SessionLocal()
 	query = session.query(models.Employee)
 	return query.filter(models.Employee.telegram_id == telegram_id).all()
+
+
+def get_teachers():
+	session = db.SessionLocal()
+	query = session.query(models.Employee)
+	return query.filter(models.Employee.role_id in roles.TEACHER_ROLES).all()

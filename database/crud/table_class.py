@@ -1,3 +1,6 @@
+from sqlalchemy import func
+import datetime
+
 from database import db
 from database import models
 
@@ -28,3 +31,11 @@ def get_class(class_id: int):
 	session = db.SessionLocal()
 	query = session.query(models.Class)
 	return query.filter(models.Class.class_id == class_id).one_or_none()
+
+
+def not_marked_classes(date: datetime.date):
+	session = db.SessionLocal()
+	query = session.query(models.Class)
+	return query.filter(
+		(models.Class.last_date.is_(None)) | (func.date(models.Class.last_date) < date)
+	).all()

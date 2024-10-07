@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy import Integer, String, VARCHAR, Boolean, DateTime
+from sqlalchemy import Integer, String, VARCHAR, Date
 from sqlalchemy.orm import relationship
 
 from database.db import Base
@@ -42,7 +42,7 @@ class Class(Base):
 
 	class_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	class_name = Column(VARCHAR(10), unique=True)
-	last_date = Column(DateTime)
+	last_date = Column(Date)
 
 	student_class = relationship('Student', back_populates='student')
 
@@ -57,6 +57,7 @@ class Student(Base):
 	class_id = Column(Integer, ForeignKey('Class.class_id'), nullable=False)
 
 	student = relationship('Class', back_populates='student_class')
+	absent_student = relationship('Absent', back_populates='about_student')
 
 
 class BlockedUser(Base):
@@ -72,3 +73,17 @@ class AbsenceReason(Base):
 	reason_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	title = Column(VARCHAR(100), nullable=False)
 	description = Column(String, nullable=False)
+
+	reason = relationship('Absent', back_populates='absent')
+
+
+class Absent(Base):
+	__tablename__ = 'Absent'
+
+	absent_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
+	reason_id = Column(Integer, ForeignKey('AbsenceReason.reason_id'), nullable=False)
+	student_id = Column(Integer, ForeignKey('Student.student_id'), nullable=False)
+	date = Column(Date)
+
+	absent = relationship('AbsenceReason', back_populates='reason')
+	about_student = relationship('Student', back_populates='absent_student')

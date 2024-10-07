@@ -14,10 +14,13 @@ dp = Dispatcher(bot, storage=MemoryStorage())
 database.models.Base.metadata.create_all(bind=engine)
 
 # Добавляем роли сотрудников в таблицу бд
-database.crud.table_role.add_employee_roles()
+database.crud.table_role.load_employee_roles()
 
 # Загружаем сотрудников в бд
 database.crud.table_employee.load_employees()
 
 # Добавляем учеников и классы в бд
 database.crud.table_student.load_students()
+
+# Добавляем причины отсутствия в бд
+database.crud.table_absence_reason.load_reasons()
