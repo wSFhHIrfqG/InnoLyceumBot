@@ -11,7 +11,6 @@ def classes_markup(classes: list):
 
 def students_markup(students: list, absents: list):
 	markup = InlineKeyboardMarkup()
-
 	absent_students_id = [absent.get('student_id') for absent in absents]  # student_id отсутствующих
 	for student in students:
 		if student.student_id in absent_students_id:
@@ -21,6 +20,9 @@ def students_markup(students: list, absents: list):
 			btn = InlineKeyboardButton(f'⚪️ {student.surname} {student.name}',
 									   callback_data=f'student:{student.student_id}')
 		markup.row(btn)
+
+	to_classes_btn = InlineKeyboardButton(f'⬅ К классам', callback_data='to_classes')
+	markup.row(to_classes_btn)
 	return markup
 
 

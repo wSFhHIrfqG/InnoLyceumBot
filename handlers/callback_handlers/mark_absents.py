@@ -1,8 +1,9 @@
 from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher import FSMContext
 from aiogram import types
+import datetime
 
-from loader import dp
+from loader import dp, bot
 from database import crud
 import keyboards
 
@@ -73,4 +74,13 @@ async def save_absent(call: types.CallbackQuery, state: FSMContext):
 	await call.message.edit_text(
 		text='Выберите отсутствующих',
 		reply_markup=keyboards.inline.mark_absents.students_markup(class_students, absents_in_class)
+	)
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='to_classes', state='*')
+async def to_classes(call: types.CallbackQuery, state: FSMContext):
+	not_marked_classes_today = crud.table_class.not_marked_classes(date=datetime.date.today())
+	await call.message.edit_text(
+		text='Выберите класс',
+		reply_markup=keyboards.inline.mark_absents.classes_markup(not_marked_classes_today)
 	)
