@@ -3,9 +3,15 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def classes_markup(classes: list):
 	markup = InlineKeyboardMarkup()
+	row_width = 4
+	row = []
 	for class_ in classes:
 		btn = InlineKeyboardButton(class_.class_name, callback_data=f'class:{class_.class_id}')
-		markup.row(btn)
+		if len(row) >= row_width:
+			markup.row(*row)
+			row.clear()
+		row.append(btn)
+	markup.row(*row)
 	return markup
 
 
