@@ -13,6 +13,7 @@ import keyboards
 @dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
 					state=UserStates.main_menu)
 async def action_chosen(message: types.Message, state=FSMContext):
+	data = await state.get_data()
 	user_roles = [
 		role.role_id for role in crud.table_employee.get_employee_by_telegram_id(message.from_user.id)
 	]
@@ -26,7 +27,9 @@ async def action_chosen(message: types.Message, state=FSMContext):
 		if user_role in roles.TEACHER_ROLES:
 			if message.text == '🖍 Отметить отсутствующих':
 				not_marked_classes_today = crud.table_class.not_marked_classes(date=datetime.date.today())
-				await state.update_data(absents=dict())
+
+				if data.get('absents') is None:
+					await state.update_data(absents=dict())
 				await bot.send_message(
 					message.from_user.id,
 					'Выберите класс',
