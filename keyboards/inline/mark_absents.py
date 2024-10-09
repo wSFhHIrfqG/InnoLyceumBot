@@ -37,4 +37,6 @@ def reasons_markup(reasons: list):
 	for reason in reasons:
 		btn = InlineKeyboardButton(reason.title, callback_data=f'reason:{reason.reason_id}')
 		markup.row(btn)
+	to_students_btn = InlineKeyboardButton(f'⬅ К ученикам', callback_data='to_students')
+	markup.row(to_students_btn)
 	return markup

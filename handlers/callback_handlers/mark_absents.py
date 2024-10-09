@@ -70,7 +70,7 @@ async def save_absent(call: types.CallbackQuery, state: FSMContext):
 	absents[class_id] = absents_in_class
 	await state.update_data(absents=absents)
 
-	class_students = crud.table_student.get_students_by_class(data.get('class_id'))
+	class_students = crud.table_student.get_students_by_class(class_id)
 	await call.message.edit_text(
 		text='Выберите отсутствующих',
 		reply_markup=keyboards.inline.mark_absents.students_markup(class_students, absents_in_class)
@@ -83,4 +83,18 @@ async def to_classes(call: types.CallbackQuery, state: FSMContext):
 	await call.message.edit_text(
 		text='Выберите класс',
 		reply_markup=keyboards.inline.mark_absents.classes_markup(not_marked_classes_today)
+	)
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='to_students', state='*')
+async def to_students(call: types.CallbackQuery, state: FSMContext):
+	data = await state.get_data()
+	class_id = data.get('class_id')
+	absents = data.get('absents', {})
+	absents_in_class = absents.get(class_id, [])
+
+	class_students = crud.table_student.get_students_by_class(data.get('class_id'))
+	await call.message.edit_text(
+		text='Выберите отсутствующих',
+		reply_markup=keyboards.inline.mark_absents.students_markup(class_students, absents_in_class)
 	)
