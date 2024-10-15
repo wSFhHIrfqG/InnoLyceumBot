@@ -28,7 +28,8 @@ def students_markup(students: list, absents: list):
 		markup.row(btn)
 
 	to_classes_btn = InlineKeyboardButton(f'⬅ К классам', callback_data='to_classes')
-	markup.row(to_classes_btn)
+	done_btn = InlineKeyboardButton(f'✅ Готово', callback_data='mark_absents_complete')
+	markup.row(to_classes_btn, done_btn)
 	return markup
 
 

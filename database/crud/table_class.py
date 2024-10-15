@@ -39,3 +39,10 @@ def not_marked_classes(date: datetime.date):
 	return query.filter(
 		(models.Class.last_date.is_(None)) | (func.date(models.Class.last_date) < date)
 	).all()
+
+
+def set_last_date(class_id: int, date: datetime.date):
+	session = db.SessionLocal()
+	query = session.query(models.Class)
+	query.filter(models.Class.class_id == class_id).update({models.Class.last_date: date})
+	session.commit()
