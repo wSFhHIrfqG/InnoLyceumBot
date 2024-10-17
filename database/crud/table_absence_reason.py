@@ -19,16 +19,29 @@ def load_reasons():
 	"""
 	session = db.SessionLocal()
 	reasons = [
-		models.AbsenceReason(title="ОРЗ, ОРВИ, ГРИПП", description="ОРЗ, ОРВИ, грипп и аналогичные болезни"),
-		models.AbsenceReason(title="Болеет в Лицее", description="До приезда родителей или в изоляторе"),
-		models.AbsenceReason(title="По заявлению", description="По заявлению или уважительной причине"),
-		models.AbsenceReason(title="Олимпиада", description="Участи в олимпиадах, конкурсах и т.д."),
+		models.AbsenceReason(title="ОРЗ, ОРВИ, ГРИПП", description="ОРЗ, ОРВИ, грипп и аналогичные болезни",
+							 in_lyceum=False),
+		models.AbsenceReason(title="Болеет в Лицее", description="До приезда родителей или в изоляторе",
+							 in_lyceum=True),
+		models.AbsenceReason(title="По заявлению", description="По заявлению или уважительной причине",
+							 in_lyceum=False),
+		models.AbsenceReason(title="Олимпиада", description="Участи в олимпиадах, конкурсах и т.д.",
+							 in_lyceum=False),
 		models.AbsenceReason(title="Олимпиада в Лицее",
-							 description="Участи в олимпиадах, конкурсах и т.д. но находится в Лицее"),
-		models.AbsenceReason(title="УТС", description="Уехал на сборы"),
-		models.AbsenceReason(title="УТС в Лицее", description="В Лицее на сборах или подготовке"),
-		models.AbsenceReason(title="Другое", description="Причина не известна"),
+							 description="Участи в олимпиадах, конкурсах и т.д. но находится в Лицее",
+							 in_lyceum=True),
+		models.AbsenceReason(title="УТС", description="Уехал на сборы",
+							 in_lyceum=False),
+		models.AbsenceReason(title="УТС в Лицее", description="В Лицее на сборах или подготовке",
+							 in_lyceum=True),
+		models.AbsenceReason(title="Другое", description="Причина не известна", in_lyceum=False),
 	]
 	session.query(models.AbsenceReason).delete()  # Очищаем таблицу
 	session.add_all(reasons)  # Загружаем причины
 	session.commit()
+
+
+def get_reason(reason_id: int):
+	session = db.SessionLocal()
+	query = session.query(models.AbsenceReason)
+	return query.filter(models.AbsenceReason.reason_id == reason_id).one_or_none()

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy import Integer, String, VARCHAR, Date
+from sqlalchemy import Integer, String, VARCHAR, Date, Boolean
 from sqlalchemy.orm import relationship
 
 from database.db import Base
@@ -73,6 +73,7 @@ class AbsenceReason(Base):
 	reason_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	title = Column(VARCHAR(100), nullable=False)
 	description = Column(String, nullable=False)
+	in_lyceum = Column(Boolean, nullable=False)
 
 	reason = relationship('Absent', back_populates='absent')
 
