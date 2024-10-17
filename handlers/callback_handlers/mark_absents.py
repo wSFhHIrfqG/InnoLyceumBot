@@ -156,3 +156,14 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 			)
 
 		await call.message.edit_text(f'Вы успешно отметили {class_.class_name} класс!')
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='mark_absents_cancel', state='*')
+async def mark_absents_cancel(call: types.CallbackQuery, state: FSMContext):
+	message_id = call.message.message_id
+
+	data = await state.get_data()
+	data.pop(message_id, None)
+	await state.update_data(data=data)
+
+	await call.message.edit_text('Отменено')

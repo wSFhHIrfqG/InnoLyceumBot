@@ -12,6 +12,8 @@ def classes_markup(classes: list):
 			row.clear()
 		row.append(btn)
 	markup.row(*row)
+	cancel_btn = InlineKeyboardButton(f'❌ Отмена', callback_data='mark_absents_cancel')
+	markup.row(cancel_btn)
 	return markup
 
 
@@ -28,8 +30,9 @@ def students_markup(students: list, absents: list):
 		markup.row(btn)
 
 	to_classes_btn = InlineKeyboardButton(f'⬅ К классам', callback_data='to_classes')
+	cancel_btn = InlineKeyboardButton(f'❌ Отмена', callback_data='mark_absents_cancel')
 	done_btn = InlineKeyboardButton(f'✅ Готово', callback_data='mark_absents_complete')
-	markup.row(to_classes_btn, done_btn)
+	markup.row(to_classes_btn, cancel_btn, done_btn)
 	return markup
 
 
@@ -39,5 +42,6 @@ def reasons_markup(reasons: list):
 		btn = InlineKeyboardButton(reason.title, callback_data=f'reason:{reason.reason_id}')
 		markup.row(btn)
 	to_students_btn = InlineKeyboardButton(f'⬅ К ученикам', callback_data='to_students')
-	markup.row(to_students_btn)
+	cancel_btn = InlineKeyboardButton(f'❌ Отмена', callback_data='mark_absents_cancel')
+	markup.row(to_students_btn, cancel_btn)
 	return markup
