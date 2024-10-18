@@ -10,7 +10,7 @@ from config_data import config
 def create_report(date: datetime.date):
 	date_s = datetime.date.strftime(date, '%d.%m.%Y')
 
-	doc = DocxTemplate('absence_report_template.docx')
+	doc = DocxTemplate(config.ABSENT_REPORT_TEMPLATE_FILE_PATH)
 
 	context = {}
 	class_prefix = {
@@ -64,7 +64,9 @@ def create_report(date: datetime.date):
 	output_dir = config.OUTPUT_ABSENT_REPORTS_DIR
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
-	doc.save(os.path.join(output_dir, f'{date_s}.docx'))
+	fp = os.path.join(output_dir, f'{date_s}.docx')
+	doc.save(fp)
+	return fp
 
 
 if __name__ == '__main__':

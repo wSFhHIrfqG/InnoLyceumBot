@@ -1,11 +1,13 @@
 from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher import FSMContext
 from aiogram import types
+from aiogram.utils.exceptions import ChatNotFound
 import datetime
 
 from loader import dp, bot
 from database import crud
 import keyboards
+from utils.create_absence_report import create_report
 
 
 @dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text_startswith='class', state='*')
@@ -156,6 +158,15 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 			)
 
 		await call.message.edit_text(f'Вы успешно отметили {class_.class_name} класс!')
+
+		if not crud.table_class.not_marked_classes(datetime.date.today()):
+			for admin in crud.table_employee.get_admins():
+				try:
+					report_file_path = create_report(datetime.date.today())  # Создаем отчет
+					with open(report_file_path, 'rb') as file:
+						await bot.send_document(admin.telegram_id, document=file, caption='Все классы отмечены')
+				except ChatNotFound as exc:
+					pass  # log exception
 
 
 @dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='mark_absents_cancel', state='*')

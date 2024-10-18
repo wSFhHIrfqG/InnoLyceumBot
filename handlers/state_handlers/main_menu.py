@@ -20,7 +20,7 @@ async def action_chosen(message: types.Message, state=FSMContext):
 	for user_role in user_roles:
 		if user_role in roles.ADMIN_ROLES:
 			if message.text == '⚙️ Администрирование':
-				await bot.send_message(message.from_user.id, '▶️ Выберите действие',
+				await bot.send_message(message.from_user.id, 'Выберите действие',
 									   reply_markup=keyboards.inline.admin.admin_markup())
 
 		if user_role in roles.TEACHER_ROLES:

@@ -57,4 +57,10 @@ def get_employee_by_telegram_id(telegram_id: int):
 def get_teachers():
 	session = db.SessionLocal()
 	query = session.query(models.Employee)
-	return query.filter(models.Employee.role_id in roles.TEACHER_ROLES).all()
+	return query.filter(models.Employee.role_id.in_(roles.TEACHER_ROLES)).all()
+
+
+def get_admins():
+	session = db.SessionLocal()
+	query = session.query(models.Employee)
+	return query.filter(models.Employee.role_id.in_(roles.ADMIN_ROLES)).all()
