@@ -29,7 +29,7 @@ def is_absent(student_id: int, date: datetime.date):
 	session = db.SessionLocal()
 	query = session.query(models.Absent)
 	return bool(query.filter(
-		models.Absent.student_id == student_id and func.date(models.Absent.date) == date
+		(models.Absent.student_id == student_id) & (func.date(models.Absent.date) == date)
 	).one_or_none())
 
 
@@ -37,7 +37,7 @@ def get_absent(student_id: int, date: datetime.date):
 	session = db.SessionLocal()
 	query = session.query(models.Absent)
 	return query.filter(
-		models.Absent.student_id == student_id and func.date(models.Absent.date) == date
+		(models.Absent.student_id == student_id) & (func.date(models.Absent.date) == date)
 	).one_or_none()
 
 
@@ -52,5 +52,5 @@ def absents_in_class(class_id: int, date: datetime.date):
 	session = db.SessionLocal()
 	query = session.query(models.Absent).join(models.Student)
 	return query.filter(
-		models.Student.class_id == class_id and func.date(models.Absent.date) == date
+		(models.Student.class_id == class_id) & (func.date(models.Absent.date) == date)
 	).all()

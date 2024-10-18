@@ -22,15 +22,18 @@ def create_report(date: datetime.date):
 	}
 	context['date'] = date_s
 
-	all_students = crud.table_student.count_all_students()
-	all_in_lyceum = all_students
-	for class_ in crud.table_class.get_all():
+	all_students = 0
+	all_in_lyceum = 0
+	for class_ in crud.table_class.marked_classes(datetime.date.today()):
 		prefix = class_prefix.get(class_.class_name)
 
 		students_in_class = crud.table_student.count_students_by_class(class_.class_id)  # Учеников в классе
 		absent_students = 0  # Отсутствующие
 		absent_in = 0  # В лицее
 		absent_out = 0  # Вне лицея
+
+		all_in_lyceum += students_in_class
+		all_students += students_in_class
 
 		absents = []
 		for absent in crud.table_absent.absents_in_class(class_.class_id, datetime.date.today()):

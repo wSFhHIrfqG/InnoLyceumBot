@@ -41,6 +41,12 @@ def not_marked_classes(date: datetime.date):
 	).all()
 
 
+def marked_classes(date: datetime.date):
+	session = db.SessionLocal()
+	query = session.query(models.Class)
+	return query.filter(func.date(models.Class.last_date) == date).all()
+
+
 def set_last_date(class_id: int, date: datetime.date):
 	session = db.SessionLocal()
 	query = session.query(models.Class)
