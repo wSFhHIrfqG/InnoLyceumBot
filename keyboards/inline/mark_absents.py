@@ -3,15 +3,31 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def classes_markup(classes: list):
 	markup = InlineKeyboardMarkup()
-	row_width = 4
-	row = []
-	for class_ in classes:
-		btn = InlineKeyboardButton(class_.class_name, callback_data=f'class:{class_.class_id}')
-		if len(row) >= row_width:
-			markup.row(*row)
-			row.clear()
-		row.append(btn)
-	markup.row(*row)
+
+	n = len(classes)
+	if not n % 2:
+		markup.row(
+			*[InlineKeyboardButton(
+				class_.class_name, callback_data=f'class:{class_.class_id}'
+			) for class_ in classes[:n // 2]]
+		)
+		markup.row(
+			*[InlineKeyboardButton(
+				class_.class_name, callback_data=f'class:{class_.class_id}'
+			) for class_ in classes[n // 2:]]
+		)
+	else:
+		markup.row(
+			*[InlineKeyboardButton(
+				class_.class_name, callback_data=f'class:{class_.class_id}'
+			) for class_ in classes[:(n // 2) + 1]]
+		)
+		markup.row(
+			*[InlineKeyboardButton(
+				class_.class_name, callback_data=f'class:{class_.class_id}'
+			) for class_ in classes[(n // 2) + 1:]]
+		)
+
 	cancel_btn = InlineKeyboardButton(f'❌ Отмена', callback_data='mark_absents_cancel')
 	markup.row(cancel_btn)
 	return markup
