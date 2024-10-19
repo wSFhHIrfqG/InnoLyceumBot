@@ -2,7 +2,9 @@ import datetime
 import os
 
 from docxtpl import DocxTemplate
+from docx.opc.exceptions import PackageNotFoundError
 
+from loader import logger
 from database import crud
 from config_data import config
 
@@ -59,7 +61,15 @@ def create_report(date: datetime.date):
 	context['all_in_lyceum'] = all_in_lyceum
 	context['all_students'] = all_students
 
-	doc.render(context)
+	try:
+		doc.render(context)
+	except PackageNotFoundError as exc:
+		logger.error(
+			'Файл с шаблоном отчёта об отсутствующих не найден. '
+			'Убедитесь, что тот существует и находится в папке input'
+		)
+		logger.exception(exc)
+		raise exc
 
 	output_dir = config.OUTPUT_ABSENT_REPORTS_DIR
 	if not os.path.exists(output_dir):
@@ -71,4 +81,3 @@ def create_report(date: datetime.date):
 
 if __name__ == '__main__':
 	create_report(datetime.date.today())
-	print('Got succeed!')
