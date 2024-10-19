@@ -1,8 +1,12 @@
+import os
+
+base_dir = os.path.dirname(os.path.dirname(__file__))
+
 LOG_CONFIG = {
 	'version': 1,
 	'formatters': {
 		'standard': {
-			'format': '%(asctime)s %(levelname)s (%(name)s) %(message)s',
+			'format': '%(levelname)s [%(asctime)s] %(name)s: %(message)s',
 			'datefmt': '%d.%m.%Y %H:%M:%S'
 		},
 		'simple': {
@@ -20,15 +24,14 @@ LOG_CONFIG = {
 			'level': 'DEBUG',
 			'formatter': 'standard',
 			'class': 'logging.FileHandler',
-			'filename': 'bot.log',
+			'filename': os.path.join(base_dir, 'bot.log'),
 			'mode': 'a'
 		}
 	},
 	'loggers': {
 		'logger': {
 			'handlers': ['stream_handler', 'file_handler', ],
-			'level': 'DEBUG',
-			'propagate': True
+			'level': 'DEBUG'
 		}
 	}
 }
