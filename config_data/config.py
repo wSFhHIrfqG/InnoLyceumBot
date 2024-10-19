@@ -14,3 +14,6 @@ DATABASE_URL = 'sqlite:///' + os.path.join(base_dir, 'database', os.getenv('DATA
 
 EMPLOYEE_DATA_FILE_PATH = os.path.join(base_dir, 'input', os.getenv('EMPLOYEE_DATA_FILENAME'))
 STUDENT_DATA_FILE_PATH = os.path.join(base_dir, 'input', os.getenv('STUDENT_DATA_FILENAME'))
+ABSENT_REPORT_TEMPLATE_FILE_PATH = os.path.join(base_dir, 'input', os.getenv('ABSENT_REPORT_TEMPLATE'))
+
+OUTPUT_ABSENT_REPORTS_DIR = os.path.join(base_dir, 'output', 'absence_reports')

@@ -4,3 +4,5 @@ from . import table_registration_request
 from . import table_class
 from . import table_student
 from . import table_blocked_user
+from . import table_absence_reason
+from . import table_absent

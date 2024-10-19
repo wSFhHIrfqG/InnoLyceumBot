@@ -14,7 +14,7 @@ def start_markup(telegram_id: int):
 		if role_id in roles.ADMIN_ROLES:
 			markup.row(KeyboardButton(text='⚙️ Администрирование'))
 		if role_id in roles.TEACHER_ROLES:
-			pass
+			markup.row(KeyboardButton(text='🖍 Отметить отсутствующих'))
 		if role_id in roles.EMPLOYEE_ROLES:
 			pass
 	return markup
