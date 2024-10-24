@@ -1,6 +1,3 @@
-import logging.config
-import logging
-
 from aiogram import Bot
 from aiogram import types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -27,7 +24,3 @@ database.crud.table_student.load_students()
 
 # Добавляем причины отсутствия в бд
 database.crud.table_absence_reason.load_reasons()
-
-# Конфигурируем логирование, инициализируем логгер
-logging.config.dictConfig(log_config.LOG_CONFIG)
-logger = logging.getLogger('logger')

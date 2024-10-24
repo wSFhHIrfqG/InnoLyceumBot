@@ -4,7 +4,7 @@ import os
 from docxtpl import DocxTemplate
 from docx.opc.exceptions import PackageNotFoundError
 
-from loader import logger
+from bot_logging import logger
 from database import crud
 from config_data import config
 

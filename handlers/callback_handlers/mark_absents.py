@@ -6,8 +6,8 @@ from aiogram import types
 from aiogram.utils.exceptions import ChatNotFound
 from docx.opc.exceptions import PackageNotFoundError
 
-from loader import dp, bot, logger
-from config_data import config
+from loader import dp, bot
+from bot_logging import logger
 from database import crud
 import keyboards
 from utils.create_absence_report import create_report
