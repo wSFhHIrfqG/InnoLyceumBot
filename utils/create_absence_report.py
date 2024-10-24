@@ -64,11 +64,10 @@ def create_report(date: datetime.date):
 	try:
 		doc.render(context)
 	except PackageNotFoundError as exc:
-		logger.error(
-			'Файл с шаблоном отчёта об отсутствующих не найден. '
-			'Убедитесь, что тот существует и находится в папке input'
-		)
-		logger.exception(exc)
+		msg = 'Файл с шаблоном отчёта об отсутствующих не найден. ' \
+			  'Убедитесь, что тот существует и находится в папке input. ' \
+			  'Проверьте имя файла в переменных окружения.'
+		logger.exception(msg)
 		raise exc
 
 	output_dir = config.OUTPUT_ABSENT_REPORTS_DIR
