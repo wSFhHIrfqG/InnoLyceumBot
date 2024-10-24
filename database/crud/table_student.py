@@ -14,6 +14,11 @@ def get_all():
 
 
 def load_students():
+	"""
+	Записать в таблицу Student данные из excel таблицы с учениками
+
+	:return: True, если данные успешно обновлены
+	"""
 	session = db.SessionLocal()
 	session.query(models.Student).delete()  # Очищаем таблицу
 	session.commit()

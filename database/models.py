@@ -6,6 +6,16 @@ from database.db import Base
 
 
 class Role(Base):
+	"""
+	Роли сотрудников.
+
+	Присваивается каждому сотруднику при парсинге.
+
+	Колонки:
+		employee_id: Идентификатор роли
+		title: Название роли
+		description: Описание роли
+	"""
 	__tablename__ = 'Role'
 
 	role_id = Column(Integer, primary_key=True, unique=True, nullable=False)
@@ -19,6 +29,17 @@ class Role(Base):
 
 
 class Employee(Base):
+	"""
+	Сотрудники.
+
+	Колонки:
+		employee_id: Идентификатор сотрудника
+		telegram_id: Telegram id сотрудника
+		surname: Фамилия
+		name: Имя
+		middlename: Отчество
+		role_id: Id роли сотрудника
+	"""
 	__tablename__ = 'Employee'
 
 	employee_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
@@ -35,6 +56,15 @@ class Employee(Base):
 
 
 class RegistarationRequest(Base):
+	"""
+	Запросы на регистрацию.
+
+	Колонки:
+		request_id: Идентификатор запроса
+		telegram_id: Telegram id
+		from_name: ФИО, которое пользователь указал при регистрации
+		from_username: Никнейм Telegram
+	"""
 	__tablename__ = 'RegistrationRequest'
 
 	request_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
@@ -47,6 +77,14 @@ class RegistarationRequest(Base):
 
 
 class Class(Base):
+	"""
+	Классы.
+
+	Колонки:
+		class_id: Идентификатор класса
+		class_name: Имя класса ('7А', '10Б' ...)
+		last_date: Когда последний раз был отмечен класс
+	"""
 	__tablename__ = 'Class'
 
 	class_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
@@ -60,6 +98,16 @@ class Class(Base):
 
 
 class Student(Base):
+	"""
+	Ученики.
+
+	Колонки:
+		student_id: Идентификатор ученика
+		surname: Фамилия
+		name: Имя
+		middlename [OPTIONAL]: Отчество
+		class_id: Класс ученика
+	"""
 	__tablename__ = 'Student'
 
 	student_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
@@ -76,6 +124,13 @@ class Student(Base):
 
 
 class BlockedUser(Base):
+	"""
+	Черный список.
+
+	Колонки:
+		blocked_user_id: Идентификатор заблокированного пользователя
+		telegram_id: Telegram id
+	"""
 	__tablename__ = 'BlockedUser'
 
 	blocked_user_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
@@ -86,6 +141,15 @@ class BlockedUser(Base):
 
 
 class AbsenceReason(Base):
+	"""
+	Причины отсутствия.
+
+	Колонки:
+		reason_id: Идентификатор причины
+		title: Название
+		description: Описание
+		in_lyceum: Находится ли в лицее ученик, отсутствуя по данной причине
+	"""
 	__tablename__ = 'AbsenceReason'
 
 	reason_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
@@ -100,6 +164,15 @@ class AbsenceReason(Base):
 
 
 class Absent(Base):
+	"""
+	Отсутствующие ученики.
+
+	Колонки:
+		absent_id: Идентификатор отсутствующего ученика
+		reason_id: Причина отсутствия
+		student_id: Ученик
+		date: Дата отсутствия
+	"""
 	__tablename__ = 'Absent'
 
 	absent_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)

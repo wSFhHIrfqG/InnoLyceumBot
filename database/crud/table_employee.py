@@ -15,6 +15,11 @@ def get_all():
 
 
 def load_employees():
+	"""
+	Записать в таблицу Employee данные из excel таблицы с сотрудниками
+
+	:return: True, если данные успешно обновлены
+	"""
 	session = db.SessionLocal()
 	session.query(models.Employee).delete()  # Очищаем таблицу
 	session.commit()
