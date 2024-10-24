@@ -174,12 +174,9 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 							await bot.send_document(admin.telegram_id, document=file, caption='Все классы отмечены')
 				except ChatNotFound:  # Чат админа не найден
 					logger.warning(
-						f'Отчет не был отправлен: чат админа не найден '
-						f'{{'
-						f'employee_id: {admin.employee_id}, '
-						f'telegram_id: {admin.telegram_id}, '
-						f'fullname: {admin.name} {admin.surname} {admin.middlename}'
-						f'}}'
+						'Отчет не был отправлен: чат админа не найден '
+						'{employee_id: %s, telegram_id: %s, fullname: %s %s %s}' %
+						(admin.employee_id, admin.telegram_id, admin.surname, admin.name, admin.middlename)
 					)
 
 
