@@ -18,18 +18,23 @@ def load_students():
 	session.query(models.Student).delete()  # Очищаем таблицу
 	session.commit()
 
-	for student in utils.parse_students.iter_students():
-		student_initials = student.fullname.split()
-		surname = student_initials[0]
-		name = student_initials[1]
-		middlename = None
-		if len(student_initials) > 2:
-			middlename = student_initials[2]
+	try:
+		for student in utils.parse_students.iter_students():
+			student_initials = student.fullname.split()
+			surname = student_initials[0]
+			name = student_initials[1]
+			middlename = None
+			if len(student_initials) > 2:
+				middlename = student_initials[2]
 
-		class_name = student.class_name
-		class_id = crud.table_class.add_class(class_name=class_name)
+			class_name = student.class_name
+			class_id = crud.table_class.add_class(class_name=class_name)
 
-		add_student(surname=surname, name=name, middlename=middlename, class_id=class_id)
+			add_student(surname=surname, name=name, middlename=middlename, class_id=class_id)
+	except FileNotFoundError:
+		return False
+	else:
+		return True
 
 
 def add_student(surname: str, name: str, middlename: str | None, class_id: int):

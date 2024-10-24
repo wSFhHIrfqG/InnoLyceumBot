@@ -8,11 +8,17 @@ from database import crud
 
 @dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='load_employees', state='*')
 async def load_employees(call: types.CallbackQuery, state: FSMContext):
-	crud.table_employee.load_employees()
-	await call.message.reply('Данные сотрудников в базе обновлены!')
+	await call.message.edit_text('⏳ Данные обновляются')
+	if crud.table_employee.load_employees():
+		await call.message.reply('Данные сотрудников в базе обновлены!')
+	else:
+		await call.message.reply('Упс... Загрузить сотрудников не удалось. Проверьте файл логов.')
 
 
 @dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='load_students', state='*')
 async def load_students(call: types.CallbackQuery, state: FSMContext):
-	crud.table_student.load_students()
-	await call.message.reply('Данные учеников в базе обновлены')
+	await call.message.edit_text('⏳ Данные обновляются')
+	if crud.table_student.load_students():
+		await call.message.reply('Данные учеников в базе обновлены')
+	else:
+		await call.message.reply('Упс... Загрузить учеников не удалось. Проверьте файл логов.')

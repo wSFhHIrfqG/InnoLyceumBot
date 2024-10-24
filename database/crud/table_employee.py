@@ -19,20 +19,25 @@ def load_employees():
 	session.query(models.Employee).delete()  # Очищаем таблицу
 	session.commit()
 
-	for employee in utils.parse_employees.iter_employees():
-		role = crud.table_role.get_role_by_title(employee.role)
+	try:
+		for employee in utils.parse_employees.iter_employees():
+			role = crud.table_role.get_role_by_title(employee.role)
 
-		if role is not None:
-			surname, name, middlename = employee.fullname.split()
-			add_employee(
-				telegram_id=employee.telegram_id,
-				surname=surname,
-				name=name,
-				middlename=middlename,
-				role_id=role.role_id
-			)
-		else:
-			exit(f'Неизвестная роль: {employee.role}')
+			if role is not None:
+				surname, name, middlename = employee.fullname.split()
+				add_employee(
+					telegram_id=employee.telegram_id,
+					surname=surname,
+					name=name,
+					middlename=middlename,
+					role_id=role.role_id
+				)
+			else:
+				exit(f'Неизвестная роль: {employee.role}')
+	except FileNotFoundError:
+		return False
+	else:
+		return True
 
 
 def add_employee(telegram_id: int, surname: str, name: str, middlename: str, role_id: int):
