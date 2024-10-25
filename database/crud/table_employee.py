@@ -3,6 +3,7 @@ from database import models
 from database import crud
 import utils
 from config_data import roles
+from bot_logging import logger
 
 
 def get_all():
@@ -38,7 +39,9 @@ def load_employees():
 					role_id=role.role_id
 				)
 			else:
-				exit(f'Неизвестная роль: {employee.role}')
+				msg = 'Неизвестная роль: "%s"' % employee.role
+				logger.error(msg)
+				raise Exception(msg)
 	except FileNotFoundError:
 		return False
 	else:
