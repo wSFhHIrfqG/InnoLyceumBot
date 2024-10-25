@@ -26,12 +26,17 @@ async def action_chosen(message: types.Message, state=FSMContext):
 		if user_role in roles.TEACHER_ROLES:
 			if message.text == '🖍 Отметить отсутствующих':
 				not_marked_classes_today = crud.table_class.not_marked_classes(date=datetime.date.today())
-
-				await bot.send_message(
-					message.from_user.id,
-					'Выберите класс',
-					reply_markup=keyboards.inline.mark_absents.classes_markup(not_marked_classes_today)
-				)
+				if not not_marked_classes_today:
+					await bot.send_message(
+						message.from_user.id,
+						'За сегодня все классы уже отмечены'
+					)
+				else:
+					await bot.send_message(
+						message.from_user.id,
+						'Выберите класс',
+						reply_markup=keyboards.inline.mark_absents.classes_markup(not_marked_classes_today)
+					)
 
 		elif user_role in roles.EMPLOYEE_ROLES:
 			pass
