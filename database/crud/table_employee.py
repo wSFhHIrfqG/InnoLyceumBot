@@ -39,9 +39,9 @@ def load_employees():
 					role_id=role.role_id
 				)
 			else:
-				msg = 'Неизвестная роль: "%s"' % employee.role
+				msg = 'Сотрудник не был добавлен. Неизвестная роль: "%s" {fullname}' % employee.role
 				logger.error(msg)
-				raise Exception(msg)
+
 	except FileNotFoundError:
 		return False
 	else:
