@@ -55,7 +55,7 @@ class Employee(Base):
 		return f'{self.employee_id} {self.telegram_id} {self.surname} {self.name} {self.middlename} {self.role_id}'
 
 
-class RegistarationRequest(Base):
+class RegistrationRequest(Base):
 	"""
 	Запросы на регистрацию.
 
