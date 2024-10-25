@@ -23,4 +23,4 @@
 - Добавьте excel файлы с сотрудниками и учениками в папку input проекта и загрузите в них данные. Имена файлов сохраните в переменных окружения  
 - Проверьте шаблон  отчета в папке input  
 - Убедитесь, что все уникальные должности сотрудников в excel файле будут сохранены в таблице Role при запуске (См. InnoLyceumBot/database/crud/table_role) 
-- Для корректной id каждой "роли" из таблицы Role должен быть добавлен в одну из групп ADMIN_ROLES, TEACHER_ROLES, EMPLOYEE_ROLES (См. InnoLyceumBot/config_data/roles)
+- Для корректной работы id каждой "роли" из таблицы Role должен быть добавлен в одну из групп ADMIN_ROLES, TEACHER_ROLES, EMPLOYEE_ROLES (См. InnoLyceumBot/config_data/roles)
