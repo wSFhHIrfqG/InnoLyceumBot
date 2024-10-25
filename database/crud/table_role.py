@@ -1,5 +1,6 @@
 from database import db
 from database import models
+from sqlalchemy import func
 
 
 def get_all():
@@ -32,4 +33,4 @@ def load_employee_roles():
 def get_role_by_title(title: str):
 	session = db.SessionLocal()
 	query = session.query(models.Role)
-	return query.filter(models.Role.title == title).one_or_none()
+	return query.filter(func.lower(models.Role.title) == func.lower(title)).one_or_none()
