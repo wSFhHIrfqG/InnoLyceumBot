@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy import Integer, String, VARCHAR, Date, Boolean
 from sqlalchemy.orm import relationship
 
@@ -22,7 +22,7 @@ class Role(Base):
 	title = Column(VARCHAR(50), nullable=False)
 	description = Column(String, nullable=False)
 
-	role = relationship('Employee', back_populates='about_role')
+	employee = relationship('EmployeeRole', back_populates='about_role')
 
 	def __str__(self):
 		return f'{self.role_id} {self.title} {self.description}'
@@ -35,24 +35,44 @@ class Employee(Base):
 	Колонки:
 		employee_id: Идентификатор сотрудника
 		telegram_id: Telegram id сотрудника
-		surname: Фамилия
-		name: Имя
-		middlename: Отчество
-		role_id: Id роли сотрудника
+		fullname: ФИО сотрудника
 	"""
 	__tablename__ = 'Employee'
 
 	employee_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	telegram_id = Column(Integer, nullable=False)
-	surname = Column(VARCHAR(50), nullable=False)
-	name = Column(VARCHAR(50), nullable=False)
-	middlename = Column(VARCHAR(50), nullable=False)
-	role_id = Column(Integer, ForeignKey('Role.role_id'), nullable=False)
+	fullname = Column(String, nullable=False)
 
-	about_role = relationship('Role', back_populates='role')
+	role = relationship('EmployeeRole', back_populates='employee')
 
 	def __str__(self):
-		return f'{self.employee_id} {self.telegram_id} {self.surname} {self.name} {self.middlename} {self.role_id}'
+		return f'{self.employee_id} {self.telegram_id} {self.fullname} {self.role_id}'
+
+
+class EmployeeRole(Base):
+	"""
+	Роли сотрудников.
+
+	У одного сотрудника может быть несколько ролей.
+
+	Колонки:
+		employee_id: Сотрудник
+		role_id: Роль
+	"""
+	__tablename__ = 'EmployeeRole'
+
+	employee_id = Column(Integer, ForeignKey('Employee.employee_id'), nullable=False)
+	role_id = Column(Integer, ForeignKey('Role.role_id'), nullable=False)
+
+	employee = relationship('Employee', back_populates='role')
+	about_role = relationship('Role', back_populates='employee')
+
+	__table_args__ = (
+		PrimaryKeyConstraint(employee_id, role_id),
+	)
+
+	def __str__(self):
+		return f'{self.employee_id} {self.role_id}'
 
 
 class RegistrationRequest(Base):
@@ -63,14 +83,16 @@ class RegistrationRequest(Base):
 		request_id: Идентификатор запроса
 		telegram_id: Telegram id
 		from_name: ФИО, которое пользователь указал при регистрации
-		from_username: Никнейм Telegram
+		from_username: Никнейм Telegram,
+		roles: Идентификаторы роли сотрудника; строка 'role_id1,role_id2 ...'
 	"""
 	__tablename__ = 'RegistrationRequest'
 
 	request_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	telegram_id = Column(Integer, nullable=False)
-	from_name = Column(VARCHAR(50), nullable=False)
+	from_name = Column(String, nullable=False)
 	from_username = Column(VARCHAR(50), nullable=False)
+	roles = Column(String, nullable=False)
 
 	def __str__(self):
 		return f'{self.request_id} {self.telegram_id} {self.from_name} {self.from_username}'

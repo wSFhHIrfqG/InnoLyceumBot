@@ -4,6 +4,7 @@ base_dir = os.path.dirname(os.path.dirname(__file__))
 
 LOG_CONFIG = {
 	'version': 1,
+	'disable_existing_loggers': False,
 	'formatters': {
 		'standard': {
 			'format': '%(levelname)s [%(asctime)s] %(name)s: %(message)s',
@@ -15,7 +16,7 @@ LOG_CONFIG = {
 	},
 	'handlers': {
 		'stream_handler': {
-			'level': 'INFO',
+			'level': 'DEBUG',
 			'formatter': 'simple',
 			'class': 'logging.StreamHandler',
 			'stream': 'ext://sys.stdout'
@@ -31,7 +32,7 @@ LOG_CONFIG = {
 	'loggers': {
 		'logger': {
 			'handlers': ['stream_handler', 'file_handler', ],
-			'level': 'DEBUG'
+			'level': 'DEBUG',
 		}
 	}
 }
