@@ -64,4 +64,8 @@ def set_employee_role(employee_id: int, role_id: int):
 def get_employee_roles(employee_id: int):
 	session = db.SessionLocal()
 	query = session.query(models.EmployeeRole)
-	return query.filter(models.EmployeeRole.employee_id == employee_id).all()
+	return [
+		employee_role.role_id for employee_role in query.filter(
+			models.EmployeeRole.employee_id == employee_id
+		).all()
+	]

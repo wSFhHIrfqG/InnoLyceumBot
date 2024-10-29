@@ -6,10 +6,7 @@ from database import crud
 
 def start_markup(telegram_id: int):
 	employee = crud.table_employee.get_employee_by_telegram_id(telegram_id)
-	employee_roles = [
-		employee_role.role_id
-		for employee_role in crud.table_employee_role.get_employee_roles(employee.employee_id)
-	]
+	employee_roles = crud.table_employee_role.get_employee_roles(employee.employee_id)
 
 	is_admin: bool = False
 	is_teacher: bool = False

@@ -16,3 +16,4 @@ STUDENT_DATA_FILE_PATH = os.path.join(base_dir, 'input', os.getenv('STUDENT_DATA
 ABSENT_REPORT_TEMPLATE_FILE_PATH = os.path.join(base_dir, 'input', os.getenv('ABSENT_REPORT_TEMPLATE_FILENAME'))
 
 OUTPUT_ABSENT_REPORTS_DIR = os.path.join(base_dir, 'output', 'absence_reports')
+OUTPUT_EMPLOYEES_DIR = os.path.join(base_dir, 'output', 'employees')
