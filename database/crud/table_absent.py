@@ -54,3 +54,9 @@ def absents_in_class(class_id: int, date: datetime.date):
 	return query.filter(
 		(models.Student.class_id == class_id) & (func.date(models.Absent.date) == date)
 	).all()
+
+
+def clean_table():
+	session = db.SessionLocal()
+	session.query(models.Absent).delete()
+	session.commit()

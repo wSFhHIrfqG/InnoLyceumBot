@@ -34,3 +34,9 @@ def get_role_by_title(title: str):
 	session = db.SessionLocal()
 	query = session.query(models.Role)
 	return query.filter(func.lower(models.Role.title) == func.lower(title)).one_or_none()
+
+
+def get_role(role_id: int):
+	session = db.SessionLocal()
+	query = session.query(models.Role)
+	return query.filter(models.Role.role_id == role_id).one_or_none()

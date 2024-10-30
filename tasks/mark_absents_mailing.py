@@ -13,30 +13,37 @@ class Mailer:
 
 	@staticmethod
 	async def first_appeal():
-		for teacher in crud.table_employee.get_teachers():
-			telegram_id = teacher.telegram_id
-			text = "🔊 Коллеги, доброе утро! Просьба всем учителям отметить отсутствующих."
-			await bot.send_message(telegram_id, text=text)
+		for teacher_employee_id in crud.table_employee_role.get_teachers():
+			employee = crud.table_employee.get_employee(teacher_employee_id)
+			if employee:
+				text = "🔊 Коллеги, доброе утро! Просьба всем учителям отметить отсутствующих."
+				await bot.send_message(employee.telegram_id, text=text)
 
 	@staticmethod
 	async def second_appeal():
 		not_marked_classes = crud.table_class.not_marked_classes(datetime.date.today())
 		if not_marked_classes:
-			for teacher in crud.table_employee.get_teachers():
-				classes_by_comma = ', '.join([class_.class_name for class_ in not_marked_classes])
+			for teacher_employee_id in crud.table_employee_role.get_teachers():
+				employee = crud.table_employee.get_employee(teacher_employee_id)
+				if employee:
+					classes_by_comma = ', '.join([class_.class_name for class_ in not_marked_classes])
 
-				text = f"Просьба всем учителям отметить отсутствующих.\n Осталось отметить: {classes_by_comma}."
-				await bot.send_message(teacher.telegram_id, text)
+					text = f"Просьба всем учителям отметить отсутствующих.\n" \
+						   f"Осталось отметить: {classes_by_comma}"
+					await bot.send_message(employee.telegram_id, text)
 
 	@staticmethod
 	async def third_appeal():
 		not_marked_classes = crud.table_class.not_marked_classes(datetime.date.today())
 		if not_marked_classes:
-			for teacher in crud.table_employee.get_teachers():
-				classes_by_comma = ', '.join([class_.class_name for class_ in not_marked_classes])
+			for teacher_employee_id in crud.table_employee_role.get_teachers():
+				employee = crud.table_employee.get_employee(teacher_employee_id)
+				if employee:
+					classes_by_comma = ', '.join([class_.class_name for class_ in not_marked_classes])
 
-				text = f"Просьба всем учителям отметить отсутствующих.\n Осталось отметить: {classes_by_comma}."
-				await bot.send_message(teacher.telegram_id, text)
+					text = f"Просьба всем учителям отметить отсутствующих.\n" \
+						   f"Осталось отметить: {classes_by_comma}"
+					await bot.send_message(employee.telegram_id, text)
 
 	async def start(self):
 		while True:
