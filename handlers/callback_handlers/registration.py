@@ -16,7 +16,9 @@ async def ask_name(call: types.CallbackQuery, state: FSMContext):
 	if not data.get('registration'):
 		await state.update_data({'registration': dict()})
 
-	if crud.table_registration_request.get_request_by_telegram_id(call.from_user.id):
+	# Если запрос от данного telegram_id уже есть или пользователь уже добавлен
+	if crud.table_registration_request.get_request_by_telegram_id(call.from_user.id) \
+			or crud.table_employee.get_employee_by_telegram_id(call.from_user.id):
 		await call.message.edit_text(text='Вы уже отправили заявку на регистрацию')
 	else:
 		text = 'Введите <b>ФИО</b> через пробел без дополнительных символов\n\n' \
@@ -71,8 +73,9 @@ async def send_request(call: types.CallbackQuery, state: FSMContext):
 	# roles_chosen
 	roles_chosen = msg_registration_data.get('roles_chosen', [])
 
-	# Если запрос от данного telegram_id уже есть
-	if crud.table_registration_request.get_request_by_telegram_id(telegram_id):
+	# Если запрос от данного telegram_id уже есть или пользователь уже добавлен
+	if crud.table_registration_request.get_request_by_telegram_id(telegram_id) \
+			or crud.table_employee.get_employee_by_telegram_id(telegram_id):
 		registration_data = data.get('registration', {})
 		registration_data.pop(message_id, None)
 		if len(registration_data):
