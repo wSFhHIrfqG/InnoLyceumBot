@@ -21,7 +21,7 @@ async def ask_name(call: types.CallbackQuery, state: FSMContext):
 			or crud.table_employee.get_employee_by_telegram_id(call.from_user.id):
 		await call.message.edit_text(text='Вы уже отправили заявку на регистрацию')
 	else:
-		text = 'Введите <b>ФИО</b> через пробел без дополнительных символов\n\n' \
+		text = 'Введите <b>ФИО</b> через пробел без дополнительных символов.\n' \
 			   '<b>Например:</b> Иванов Максим Игоревич'
 		await call.message.edit_text(text=text)
 		await state.set_state(UserStates.registration_wait_name)
@@ -118,7 +118,7 @@ async def send_request(call: types.CallbackQuery, state: FSMContext):
 	await call.message.delete_reply_markup()
 	await bot.send_message(
 		telegram_id,
-		text='📨 Ваша заявка отправлена и будет рассмотрена администраторами!\n\n'
+		text='📨 Ваша заявка отправлена и будет рассмотрена администраторами\n\n'
 			 f'<b>ФИО:</b> {from_name}\n'
 			 f'<b>Должности:</b> {pretty_roles_string}'
 	)
