@@ -17,7 +17,7 @@ async def ask_name(call: types.CallbackQuery, state: FSMContext):
 		await state.update_data({'registration': dict()})
 
 	if crud.table_registration_request.get_request_by_telegram_id(call.from_user.id):
-		await call.message.edit_text(text='🚫 Вы уже отправили заявку на регистрацию!')
+		await call.message.edit_text(text='Вы уже отправили заявку на регистрацию')
 	else:
 		text = 'Введите <b>ФИО</b> через пробел без дополнительных символов\n\n' \
 			   '<b>Например:</b> Иванов Максим Игоревич'
@@ -70,6 +70,23 @@ async def send_request(call: types.CallbackQuery, state: FSMContext):
 
 	# roles_chosen
 	roles_chosen = msg_registration_data.get('roles_chosen', [])
+
+	# Если запрос от данного telegram_id уже есть
+	if crud.table_registration_request.get_request_by_telegram_id(telegram_id):
+		registration_data = data.get('registration', {})
+		registration_data.pop(message_id, None)
+		if len(registration_data):
+			data['registration'] = registration_data
+		else:
+			data.pop('registration', None)
+		await state.update_data(data=data)
+
+		await call.message.delete_reply_markup()
+		await bot.send_message(
+			chat_id=telegram_id,
+			text='Вы уже отправили заявку на регистрацию'
+		)
+		return
 
 	roles_id_string = ','.join(str(role_id) for role_id in roles_chosen)
 	request_id = crud.table_registration_request.add_registration_request(
@@ -133,7 +150,7 @@ async def accept_registration_request(call: types.CallbackQuery, state: FSMConte
 
 	await bot.send_message(
 		chat_id=request.telegram_id,
-		text='✅ Ваш запрос на регистрацию одобрен'
+		text='Ваш запрос на регистрацию одобрен'
 	)
 
 
@@ -141,33 +158,47 @@ async def accept_registration_request(call: types.CallbackQuery, state: FSMConte
 						   text_startswith='registration_request_cancel', state='*')
 async def cancel_registration_request(call: types.CallbackQuery, state: FSMContext):
 	request_id = int(call.data.split(':')[1])
-	request = crud.table_registration_request.get_registration_request(request_id)
 
-	crud.table_registration_request.close_registration_request(request_id)
 	await call.message.delete_reply_markup()
 	await call.message.reply('Запрос отклонен')
 	await call.message.reply(
 		text='Добавить пользователя в черный список?',
-		reply_markup=keyboards.inline.registration.confirm_user_blocking(request.telegram_id)
-	)
-
-	await bot.send_message(
-		chat_id=request.telegram_id,
-		text='❌ Ваш запрос на регистрацию отклонен'
+		reply_markup=keyboards.inline.registration.confirm_user_blocking(request_id)
 	)
 
 
 @dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
 						   text_startswith='blocking_user_accept', state='*')
-async def block_user(call: types.CallbackQuery, state: FSMContext):
-	user_telegram_id = int(call.data.split(':')[1])
+async def blocking_user_accept(call: types.CallbackQuery, state: FSMContext):
+	request_id = int(call.data.split(':')[1])
+	request = crud.table_registration_request.get_registration_request(request_id)
 
-	crud.table_blocked_user.block_user(user_telegram_id)
-	await bot.delete_message(call.from_user.id, call.message.message_id)
-	await call.message.reply_to_message.reply('🔏 Позьзователь заблокирован')
+	crud.table_blocked_user.block_user(
+		telegram_id=request.telegram_id,
+		fullname=request.from_name,
+		username=request.from_username
+	)
+	crud.table_registration_request.close_registration_request(request_id)
+
+	await call.message.edit_text('🔏 Пользователь заблокирован')
+
+	await bot.send_message(
+		chat_id=request.telegram_id,
+		text='Ваш запрос на регистрацию отклонен'
+	)
 
 
 @dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
 						   text_startswith='blocking_user_cancel', state='*')
-async def do_nothing(call: types.CallbackQuery, state: FSMContext):
+async def blocking_user_cancel(call: types.CallbackQuery, state: FSMContext):
+	request_id = int(call.data.split(':')[1])
+	request = crud.table_registration_request.get_registration_request(request_id)
+
+	crud.table_registration_request.close_registration_request(request_id)
+
 	await bot.delete_message(call.from_user.id, call.message.message_id)
+
+	await bot.send_message(
+		chat_id=request.telegram_id,
+		text='Ваш запрос на регистрацию отклонен'
+	)

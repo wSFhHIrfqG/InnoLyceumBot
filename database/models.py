@@ -152,14 +152,18 @@ class BlockedUser(Base):
 	Колонки:
 		blocked_user_id: Идентификатор заблокированного пользователя
 		telegram_id: Telegram id
+		fullname: ФИО заблокированного пользователя
+		username: Имя пользователя телеграм без '@'
 	"""
 	__tablename__ = 'BlockedUser'
 
 	blocked_user_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	telegram_id = Column(Integer, nullable=False, unique=True)
+	fullname = Column(String)
+	username = Column(String)
 
 	def __str__(self):
-		return f'{self.blocked_user_id} {self.telegram_id}'
+		return f'{self.blocked_user_id} {self.telegram_id} {self.fullname} {self.username}'
 
 
 class AbsenceReason(Base):

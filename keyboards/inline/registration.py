@@ -35,9 +35,9 @@ def registration_request_markup(request_id: int):
 	return markup
 
 
-def confirm_user_blocking(telegram_id: int):
+def confirm_user_blocking(request_id: int):
 	markup = InlineKeyboardMarkup()
-	btn1 = InlineKeyboardButton('Да', callback_data=f'blocking_user_accept:{telegram_id}')
-	btn2 = InlineKeyboardButton('Нет', callback_data=f'blocking_user_cancel:{telegram_id}')
+	btn1 = InlineKeyboardButton('Да', callback_data=f'blocking_user_accept:{request_id}')
+	btn2 = InlineKeyboardButton('Нет', callback_data=f'blocking_user_cancel:{request_id}')
 	markup.row(btn1, btn2)
 	return markup
