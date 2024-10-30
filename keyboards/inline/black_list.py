@@ -5,6 +5,7 @@ def black_list_markup(i: int, n: int):
 	markup = InlineKeyboardMarkup()
 
 	unlock_user_btn = InlineKeyboardButton(text='Разблокировать', callback_data=f'unlock_user:{i}')
+	close_btn = InlineKeyboardButton(text='❌ Закрыть', callback_data='bl_close')
 	empty_btn = InlineKeyboardButton(text=' ', callback_data='ignore')
 
 	# Пролистать на 5 влево или пустая кнопка
@@ -32,6 +33,7 @@ def black_list_markup(i: int, n: int):
 		hard_right_btn = empty_btn
 
 	markup.row(unlock_user_btn)
+	markup.row(close_btn)
 	if n != 1:
 		markup.row(hard_left_btn, left_btn, right_btn, hard_right_btn)
 

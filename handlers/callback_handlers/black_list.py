@@ -136,3 +136,9 @@ async def bl_hard_right(call: types.CallbackQuery, state: FSMContext):
 		text=text,
 		reply_markup=keyboards.inline.black_list.black_list_markup(new_i, n)
 	)
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+						   text_startswith='bl_close', state='*')
+async def bl_close(call: types.CallbackQuery, state: FSMContext):
+	await call.message.delete()
