@@ -6,3 +6,5 @@ class UserStates(StatesGroup):
 	registration_wait_name = State()  # Пользователь вводит ФИО при регистрации
 
 	main_menu = State()  # Начальное меню
+
+	support_wait_message = State()  # Пользователь вводит сообщение в поддержку
