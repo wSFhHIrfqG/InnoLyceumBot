@@ -2,7 +2,7 @@ from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher import FSMContext
 from aiogram import types
 
-from loader import dp, bot
+from loader import dp
 from database import crud
 import keyboards
 
