@@ -10,6 +10,15 @@ class Mailer:
 	FIRST_APPEAL_TIME = datetime.time(hour=7, minute=50)
 	SECOND_APPEAL_TIME = datetime.time(hour=8, minute=30)
 	THIRD_APPEAL_TIME = datetime.time(hour=9, minute=0)
+	SKIP_WEEKDAYS = [6]
+
+	def __str__(self):
+		return f'Mailer: {{' \
+			   f'FIRST_APPEAL_TIME: {self.FIRST_APPEAL_TIME},' \
+			   f'SECOND_APPEAL_TIME: {self.SECOND_APPEAL_TIME},' \
+			   f'THIRD_APPEAL_TIME: {self.THIRD_APPEAL_TIME},' \
+			   f'SKIP_WEEKDAYS: {self.SKIP_WEEKDAYS}' \
+			   f'}}'
 
 	@staticmethod
 	async def first_appeal():
@@ -47,11 +56,19 @@ class Mailer:
 
 	async def start(self):
 		while True:
-			now_time = datetime.time(hour=datetime.datetime.now().hour, minute=datetime.datetime.now().minute)
-			if now_time == self.FIRST_APPEAL_TIME:
-				await self.first_appeal()
-			elif now_time == self.SECOND_APPEAL_TIME:
-				await self.second_appeal()
-			elif now_time == self.THIRD_APPEAL_TIME:
-				await self.third_appeal()
+			now = datetime.datetime.now()
+
+			if now.weekday() not in self.SKIP_WEEKDAYS:
+				now_time = datetime.time(hour=now.hour, minute=now.minute)
+				if now_time == self.FIRST_APPEAL_TIME:
+					await self.first_appeal()
+				elif now_time == self.SECOND_APPEAL_TIME:
+					await self.second_appeal()
+				elif now_time == self.THIRD_APPEAL_TIME:
+					await self.third_appeal()
+
 			await asyncio.sleep(60)
+
+
+if __name__ == '__main__':
+	print(Mailer())
