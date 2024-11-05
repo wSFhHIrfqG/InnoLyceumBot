@@ -17,6 +17,7 @@ class Cleaner:
 			try:
 				await self.clean_table_absent()
 			except Exception as exc:
+				logger.exception('Ошибка при очистке таблицы Absent')
 				raise exc
 			else:
 				logger.info('Таблица Absent очищена')

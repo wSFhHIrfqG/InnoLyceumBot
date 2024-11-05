@@ -8,3 +8,5 @@ class UserStates(StatesGroup):
 	main_menu = State()  # Начальное меню
 
 	support_wait_message = State()  # Пользователь вводит сообщение в поддержку
+
+	admin_mailing_wait_message = State()  # Администратор вводит сообщение для рассылки

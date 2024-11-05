@@ -2,9 +2,10 @@ from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher import FSMContext
 from aiogram import types
 
-import keyboards.inline.black_list
 from loader import dp, bot
 from database import crud
+from states.user_states import UserStates
+import keyboards.inline.black_list
 from utils.export import export_employees
 
 
@@ -50,3 +51,9 @@ async def black_list(call: types.CallbackQuery, state: FSMContext):
 		text=text,
 		reply_markup=keyboards.inline.black_list.black_list_markup(i, n)
 	)
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='mailing', state='*')
+async def mailing(call: types.CallbackQuery, state: FSMContext):
+	await call.message.edit_text(text='Введите текст обращения')
+	await state.set_state(UserStates.admin_mailing_wait_message)

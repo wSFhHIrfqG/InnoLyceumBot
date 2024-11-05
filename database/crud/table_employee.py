@@ -32,3 +32,12 @@ def get_employee(employee_id: int):
 	session = db.SessionLocal()
 	query = session.query(models.Employee)
 	return query.filter(models.Employee.employee_id == employee_id).one_or_none()
+
+
+def get_all_unique_telegram_id():
+	session = db.SessionLocal()
+	query = session.query(models.Employee)
+	return [
+		row.telegram_id for row in
+		query.group_by(models.Employee.telegram_id).all()
+	]
