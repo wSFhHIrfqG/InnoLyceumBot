@@ -33,8 +33,8 @@ def black_list_markup(i: int, n: int):
 		hard_right_btn = empty_btn
 
 	markup.row(unlock_user_btn)
-	markup.row(close_btn)
 	if n != 1:
 		markup.row(hard_left_btn, left_btn, right_btn, hard_right_btn)
+	markup.row(close_btn)
 
 	return markup

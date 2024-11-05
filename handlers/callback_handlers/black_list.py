@@ -2,7 +2,8 @@ from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher import FSMContext
 from aiogram import types
 
-from loader import dp
+from loader import dp, bot
+from states.user_states import UserStates
 from database import crud
 import keyboards
 
@@ -19,6 +20,11 @@ async def unlock_user(call: types.CallbackQuery, state: FSMContext):
 
 	if not n:
 		await call.message.edit_text(text='Черный список пуст')
+		await bot.send_message(
+			chat_id=call.from_user.id,
+			text='Выберите действие',
+			reply_markup=keyboards.reply.admin.admin_markup()
+		)
 		return
 
 	if i >= n:
@@ -135,6 +141,18 @@ async def bl_hard_right(call: types.CallbackQuery, state: FSMContext):
 	await call.message.edit_text(
 		text=text,
 		reply_markup=keyboards.inline.black_list.black_list_markup(new_i, n)
+	)
+
+
+@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+						   text_startswith='bl_close', state=UserStates.admin_menu)
+async def bl_close(call: types.CallbackQuery, state: FSMContext):
+	await call.message.delete()
+	await state.set_state(UserStates.admin_menu)
+	await bot.send_message(
+		chat_id=call.from_user.id,
+		text='Выберите действие',
+		reply_markup=keyboards.reply.admin.admin_markup()
 	)
 
 

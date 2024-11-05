@@ -29,9 +29,10 @@ async def action_chosen(message: types.Message, state=FSMContext):
 
 	if is_admin:
 		if message.text == '⚙️ Администрирование':
+			await state.set_state(UserStates.admin_menu)
 			await bot.send_message(
 				chat_id=message.from_user.id, text='Выберите действие',
-				reply_markup=keyboards.inline.admin.admin_markup()
+				reply_markup=keyboards.reply.admin.admin_markup()
 			)
 
 	if is_teacher:
