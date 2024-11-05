@@ -5,6 +5,7 @@ from aiogram import types
 from loader import bot, dp
 from states.user_states import UserStates
 from database import crud
+import keyboards
 
 
 @dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
@@ -22,3 +23,9 @@ async def mail_message(message: types.Message, state=FSMContext):
 		)
 
 	await message.reply(text='Сообщение отправлено')
+	await state.set_state(UserStates.admin_menu)
+	await bot.send_message(
+		chat_id=message.from_user.id,
+		text='Выберите действие',
+		reply_markup=keyboards.reply.admin.admin_markup()
+	)
