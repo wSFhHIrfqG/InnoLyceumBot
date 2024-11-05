@@ -11,13 +11,6 @@ from config_data import config
 @dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
 					state=UserStates.support_wait_message)
 async def send_support_message(message: types.Message, state=FSMContext):
-	if message.text == '❌ Отмена':
-		await bot.send_message(
-			chat_id=message.from_user.id,
-			text='Отменено'
-		)
-		return
-
 	support_message = message.text
 	from_username = message.from_user.username
 
