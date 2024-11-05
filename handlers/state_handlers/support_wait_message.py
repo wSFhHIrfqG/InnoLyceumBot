@@ -28,3 +28,10 @@ async def send_support_message(message: types.Message, state=FSMContext):
 		text='Ваше сообщение отправлено',
 		reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
 	)
+
+	await state.set_state(UserStates.main_menu)
+	await bot.send_message(
+		chat_id=message.from_user.id,
+		text='Вы в главном меню',
+		reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
+	)
