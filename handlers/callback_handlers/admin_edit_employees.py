@@ -19,6 +19,9 @@ async def show_employee(call: types.CallbackQuery, state: FSMContext):
 
 	employee_roles_id = crud.table_employee_role.get_employee_roles(employee_id)
 
+	username = employee.username
+	pretty_username = 'Не известен' if username is None else f'@{username}'
+
 	roles = []
 	for role_id in employee_roles_id:
 		role = crud.table_role.get_role(role_id)
@@ -29,7 +32,7 @@ async def show_employee(call: types.CallbackQuery, state: FSMContext):
 		   f'<b>ФИО:</b> {employee.fullname}\n' \
 		   f'<b>Должности:</b> {pretty_roles_string}\n' \
 		   f'<b>Telegram ID:</b> <code>{employee.telegram_id}</code>\n' \
-		   f'<b>Профиль:</b> @{employee.username}'
+		   f'<b>Профиль:</b> {pretty_username}'
 	await call.message.edit_text(
 		text=text,
 		reply_markup=keyboards.inline.edit_employees.edit_employee_markup(employee_id)
@@ -64,7 +67,8 @@ async def delete_employee(call: types.CallbackQuery, state: FSMContext):
 
 	await bot.send_message(
 		chat_id=employee_telegram_id,
-		text='Администраторы удалили вас из списка сотрудников'
+		text='Администраторы удалили вас из списка сотрудников',
+		reply_markup=types.ReplyKeyboardRemove
 	)
 
 

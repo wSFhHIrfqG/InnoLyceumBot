@@ -6,7 +6,7 @@ def employees_markup(employees: list):
 
 	for employee in employees:
 		btn = InlineKeyboardButton(
-			text=f'{employee.employee_id}. {employee.fullname}',
+			text=f'{employee.fullname}',
 			callback_data=f'show_employee:{employee.employee_id}'
 		)
 		markup.row(btn)

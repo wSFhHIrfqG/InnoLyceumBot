@@ -37,9 +37,12 @@ async def unlock_user(call: types.CallbackQuery, state: FSMContext):
 		new_i = i
 		user = blocked_users[i]
 
+	username = user.username
+	pretty_username = 'Не известен' if username is None else f'@{username}'
+
 	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
-		   f'<b>Профиль:</b> @{user.username}\n' \
+		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
 	await call.message.edit_text(
 		text=text,
@@ -65,9 +68,12 @@ async def bl_hard_left(call: types.CallbackQuery, state: FSMContext):
 		new_i = i
 		user = blocked_users[i]
 
+	username = user.username
+	pretty_username = 'Не известен' if username is None else f'@{username}'
+
 	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
-		   f'<b>Профиль:</b> @{user.username}\n' \
+		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
 	await call.message.edit_text(
 		text=text,
@@ -93,9 +99,12 @@ async def bl_left(call: types.CallbackQuery, state: FSMContext):
 		new_i = i
 		user = blocked_users[i]
 
+	username = user.username
+	pretty_username = 'Не известен' if username is None else f'@{username}'
+
 	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
-		   f'<b>Профиль:</b> @{user.username}\n' \
+		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
 	await call.message.edit_text(
 		text=text,
@@ -121,9 +130,12 @@ async def bl_right(call: types.CallbackQuery, state: FSMContext):
 		new_i = i
 		user = blocked_users[i]
 
+	username = user.username
+	pretty_username = 'Не известен' if username is None else f'@{username}'
+
 	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
-		   f'<b>Профиль:</b> @{user.username}\n' \
+		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
 	await call.message.edit_text(
 		text=text,
@@ -149,9 +161,12 @@ async def bl_hard_right(call: types.CallbackQuery, state: FSMContext):
 		new_i = i
 		user = blocked_users[i]
 
+	username = user.username
+	pretty_username = 'Не известен' if username is None else f'@{username}'
+
 	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
-		   f'<b>Профиль:</b> @{user.username}\n' \
+		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
 	await call.message.edit_text(
 		text=text,

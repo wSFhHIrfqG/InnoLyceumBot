@@ -76,6 +76,7 @@ async def send_request(call: types.CallbackQuery, state: FSMContext):
 
 	# from_username
 	from_username = call.from_user.username
+	pretty_from_username = 'Не известен' if from_username is None else f'@{from_username}'
 
 	# roles_chosen
 	roles_chosen = msg_registration_data.get('roles_chosen', [])
@@ -118,7 +119,7 @@ async def send_request(call: types.CallbackQuery, state: FSMContext):
 			 f'<b>ФИО:</b> {from_name}\n'
 			 f'<b>Должности:</b> {pretty_roles_string}\n'
 			 f'<b>Telegram ID:</b> <code>{telegram_id}</code>\n'
-			 f'<b>Профиль:</b> @{from_username}\n\n',
+			 f'<b>Профиль:</b> {pretty_from_username}\n\n',
 		reply_markup=keyboards.inline.registration.registration_request_markup(request_id)
 	)
 

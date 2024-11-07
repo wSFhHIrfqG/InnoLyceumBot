@@ -15,12 +15,10 @@ from config_data import config
 	state=UserStates.support_wait_message)
 async def send_support_message(message: types.Message, state=FSMContext):
 	support_message = message.text
-	from_username = message.from_user.username
 
 	await state.set_state(UserStates.main_menu)
 
 	text_to_admins = f'📬 Получено новое сообщение\n\n' \
-					 f'<b>От:</b> @{from_username}\n' \
 					 f'<b>Текст:</b> {support_message}'
 
 	await bot.send_message(chat_id=config.SUPER_ADMIN_TELEGRAM_ID, text=text_to_admins)
