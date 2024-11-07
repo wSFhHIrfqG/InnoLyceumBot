@@ -76,7 +76,7 @@ async def delete_employee(call: types.CallbackQuery, state: FSMContext):
 async def to_employees(call: types.CallbackQuery, state: FSMContext):
 	employees = crud.table_employee.get_all()
 	if len(employees):
-		text = 'Список сотрудников',
+		text = 'Список сотрудников'
 	else:
 		text = 'Список сотрудников пуст'
 
