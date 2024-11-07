@@ -36,12 +36,14 @@ class Employee(Base):
 		employee_id: Идентификатор сотрудника
 		telegram_id: Telegram id сотрудника
 		fullname: ФИО сотрудника
+		username: Никнейм телеграм
 	"""
 	__tablename__ = 'Employee'
 
 	employee_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	telegram_id = Column(Integer, nullable=False)
 	fullname = Column(String, nullable=False)
+	username = Column(String)
 
 	role = relationship('EmployeeRole', back_populates='employee')
 

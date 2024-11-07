@@ -11,11 +11,12 @@ def get_all():
 	return data
 
 
-def add_employee(telegram_id: int, fullname: str):
+def add_employee(telegram_id: int, fullname: str, username: str):
 	session = db.SessionLocal()
 	employee = models.Employee(
 		telegram_id=telegram_id,
-		fullname=fullname
+		fullname=fullname,
+		username=username
 	)
 	session.add(employee)
 	session.commit()
@@ -41,3 +42,11 @@ def get_all_unique_telegram_id():
 		row.telegram_id for row in
 		query.group_by(models.Employee.telegram_id).all()
 	]
+
+
+def delete_employee(employee_id: int):
+	session = db.SessionLocal()
+	query = session.query(models.Employee)
+	query.filter(models.Employee.employee_id == employee_id).delete()
+	session.commit()
+	session.close()

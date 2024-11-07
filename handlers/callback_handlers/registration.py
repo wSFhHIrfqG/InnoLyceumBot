@@ -139,10 +139,11 @@ async def accept_registration_request(call: types.CallbackQuery, state: FSMConte
 	request = crud.table_registration_request.get_registration_request(request_id)
 	telegram_id = request.telegram_id
 	fullname = request.from_name
+	username = request.from_username
 	roles = map(int, request.roles.split(','))
 
 	employee_id = crud.table_employee.add_employee(
-		telegram_id=telegram_id, fullname=fullname)
+		telegram_id=telegram_id, fullname=fullname, username=username)
 	for role_id in roles:
 		crud.table_employee_role.set_employee_role(
 			employee_id=employee_id, role_id=role_id)

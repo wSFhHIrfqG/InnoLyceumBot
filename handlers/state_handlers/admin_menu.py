@@ -12,7 +12,20 @@ from utils.export import export_employees
 @dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
 					state=UserStates.admin_menu)
 async def admin_action_chosen(message: types.Message, state=FSMContext):
-	if message.text == '📤 Выгрузить сотрудников':
+	if message.text == '📃 Сотрудники':
+		employees = crud.table_employee.get_all()
+		if len(employees):
+			text = 'Список сотрудников',
+		else:
+			text = 'Список сотрудников пуст'
+
+		await bot.send_message(
+			chat_id=message.from_user.id,
+			text=text,
+			reply_markup=keyboards.inline.edit_employees.employees_markup(employees)
+		)
+
+	elif message.text == '📤 Выгрузить сотрудников':
 		file_path = export_employees()
 
 		with open(file_path, 'rb') as file:

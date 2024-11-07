@@ -69,3 +69,11 @@ def get_employee_roles(employee_id: int):
 			models.EmployeeRole.employee_id == employee_id
 		).all()
 	]
+
+
+def delete_employee_roles(employee_id: int):
+	session = db.SessionLocal()
+	query = session.query(models.EmployeeRole)
+	query.filter(models.EmployeeRole.employee_id == employee_id).delete()
+	session.commit()
+	session.close()
