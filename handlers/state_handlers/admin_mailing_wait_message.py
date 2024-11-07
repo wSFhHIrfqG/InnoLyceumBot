@@ -8,8 +8,11 @@ from database import crud
 import keyboards
 
 
-@dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
-					state=UserStates.admin_mailing_wait_message)
+@dp.message_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	content_types=['text'],
+	state=UserStates.admin_mailing_wait_message)
 async def mail_message(message: types.Message, state=FSMContext):
 	for telegram_id in crud.table_employee.get_all_unique_telegram_id():
 		if telegram_id == message.from_user.id:

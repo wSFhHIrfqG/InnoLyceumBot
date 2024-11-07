@@ -9,8 +9,11 @@ import keyboards
 from utils.export import export_employees
 
 
-@dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
-					state=UserStates.admin_menu)
+@dp.message_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	content_types=['text'],
+	state=UserStates.admin_menu)
 async def admin_action_chosen(message: types.Message, state=FSMContext):
 	if message.text == '📃 Сотрудники':
 		employees = crud.table_employee.get_all()

@@ -10,8 +10,11 @@ from database import crud
 import keyboards
 
 
-@dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
-					state=UserStates.main_menu)
+@dp.message_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	content_types=['text'],
+	state=UserStates.main_menu)
 async def action_chosen(message: types.Message, state=FSMContext):
 	employee = crud.table_employee.get_employee_by_telegram_id(message.from_user.id)
 	employee_roles = crud.table_employee_role.get_employee_roles(employee.employee_id)

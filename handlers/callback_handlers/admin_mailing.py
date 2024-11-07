@@ -7,8 +7,11 @@ from loader import dp, bot
 from states.user_states import UserStates
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text='mailing_cancel', state=UserStates.admin_mailing_wait_message)
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state=UserStates.admin_mailing_wait_message,
+	text='mailing_cancel')
 async def mailing_cancel(call: types.CallbackQuery, state: FSMContext):
 	await call.message.edit_text(text='Отменено')
 	await state.set_state(UserStates.admin_menu)
@@ -19,7 +22,10 @@ async def mailing_cancel(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text='mailing_cancel', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text='mailing_cancel')
 async def mailing_cancel(call: types.CallbackQuery, state: FSMContext):
 	await call.message.edit_text(text='Отменено')

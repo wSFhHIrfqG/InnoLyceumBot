@@ -8,8 +8,11 @@ from states.user_states import UserStates
 from database import crud
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='show_employee', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='show_employee')
 async def show_employee(call: types.CallbackQuery, state: FSMContext):
 	employee_id = int(call.data.split(':')[1])
 	employee = crud.table_employee.get_employee(employee_id)
@@ -33,8 +36,11 @@ async def show_employee(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='delete_employee', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='delete_employee')
 async def delete_employee(call: types.CallbackQuery, state: FSMContext):
 	employee_id = int(call.data.split(':')[1])
 
@@ -62,8 +68,11 @@ async def delete_employee(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text='to_employees', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text='to_employees')
 async def to_employees(call: types.CallbackQuery, state: FSMContext):
 	employees = crud.table_employee.get_all()
 	if len(employees):
@@ -77,8 +86,11 @@ async def to_employees(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text='employees_close', state=UserStates.admin_menu)
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state=UserStates.admin_menu,
+	text='employees_close')
 async def employees_close(call: types.CallbackQuery, state: FSMContext):
 	await call.message.delete()
 	await state.set_state(UserStates.admin_menu)
@@ -89,7 +101,10 @@ async def employees_close(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text='employees_close', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text='employees_close')
 async def employees_close(call: types.CallbackQuery, state: FSMContext):
 	await call.message.delete()

@@ -23,7 +23,9 @@ def load_employee_roles():
 		models.Role(role_id=1, title='Директор', description='Директор лицея'),
 		models.Role(role_id=2, title='Заместитель директора', description='Заместитель директора'),
 		models.Role(role_id=3, title='Учитель', description='Учитель'),
-		models.Role(role_id=4, title='Заведующий библиотекой', description='Заведующий библиотекой')
+		models.Role(role_id=4, title='Заведующий библиотекой', description='Заведующий библиотекой'),
+		models.Role(role_id=5, title='Воспитатель', description='Воспитатель'),
+		models.Role(role_id=6, title='Классный руководитель', description='Классный руководитель')
 	]
 	session.query(models.Role).delete()  # Очищаем таблицу
 	session.add_all(roles)  # Загружаем роли

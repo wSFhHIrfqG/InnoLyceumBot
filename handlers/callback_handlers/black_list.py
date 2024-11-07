@@ -8,8 +8,11 @@ from database import crud
 import keyboards
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='unlock_user', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='unlock_user')
 async def unlock_user(call: types.CallbackQuery, state: FSMContext):
 	i = int(call.data.split(':')[1])
 
@@ -44,8 +47,11 @@ async def unlock_user(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='bl_hard_left', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='bl_hard_left')
 async def bl_hard_left(call: types.CallbackQuery, state: FSMContext):
 	i = int(call.data.split(':')[1])
 
@@ -69,8 +75,11 @@ async def bl_hard_left(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='bl_left', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='bl_left')
 async def bl_left(call: types.CallbackQuery, state: FSMContext):
 	i = int(call.data.split(':')[1])
 
@@ -94,8 +103,11 @@ async def bl_left(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='bl_right', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='bl_right')
 async def bl_right(call: types.CallbackQuery, state: FSMContext):
 	i = int(call.data.split(':')[1])
 
@@ -119,8 +131,11 @@ async def bl_right(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='bl_hard_right', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='bl_hard_right')
 async def bl_hard_right(call: types.CallbackQuery, state: FSMContext):
 	i = int(call.data.split(':')[1])
 
@@ -144,8 +159,11 @@ async def bl_hard_right(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='bl_close', state=UserStates.admin_menu)
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state=UserStates.admin_menu,
+	text_startswith='bl_close')
 async def bl_close(call: types.CallbackQuery, state: FSMContext):
 	await call.message.delete()
 	await state.set_state(UserStates.admin_menu)
@@ -156,7 +174,10 @@ async def bl_close(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='bl_close', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state=UserStates.admin_menu,
+	text_startswith='bl_close')
 async def bl_close(call: types.CallbackQuery, state: FSMContext):
 	await call.message.delete()

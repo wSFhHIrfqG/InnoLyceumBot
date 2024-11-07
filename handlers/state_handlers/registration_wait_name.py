@@ -8,8 +8,10 @@ import keyboards
 from database import crud
 
 
-@dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
-					state=UserStates.registration_wait_name)
+@dp.message_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	content_types=['text'],
+	state=UserStates.registration_wait_name)
 async def ask_role(message: types.Message, state=FSMContext):
 	await state.set_state(UserStates.start)
 

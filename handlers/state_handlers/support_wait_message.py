@@ -8,8 +8,11 @@ from states.user_states import UserStates
 from config_data import config
 
 
-@dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
-					state=UserStates.support_wait_message)
+@dp.message_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	content_types=['text'],
+	state=UserStates.support_wait_message)
 async def send_support_message(message: types.Message, state=FSMContext):
 	support_message = message.text
 	from_username = message.from_user.username

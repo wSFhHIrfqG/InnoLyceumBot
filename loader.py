@@ -6,6 +6,7 @@ from aiogram.dispatcher import Dispatcher
 from config_data import config
 import database
 from database.db import engine
+from filters.user_registered import UserRegisteredFilter
 
 bot = Bot(config.TOKEN, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -21,3 +22,6 @@ database.crud.table_absence_reason.load_reasons()
 
 # Загружаем учеников и классы в бд
 database.crud.table_student.load_students()
+
+# Загружаем кастомные фильтры
+dp.filters_factory.bind(UserRegisteredFilter)

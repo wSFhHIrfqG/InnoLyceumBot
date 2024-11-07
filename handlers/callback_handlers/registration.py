@@ -9,7 +9,10 @@ from database import crud
 import keyboards
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='start_registration', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	text='start_registration',
+	state='*')
 async def ask_name(call: types.CallbackQuery, state: FSMContext):
 	data = await state.get_data()
 
@@ -27,8 +30,10 @@ async def ask_name(call: types.CallbackQuery, state: FSMContext):
 		await state.set_state(UserStates.registration_wait_name)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='registration_role_chosen', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	text_startswith='registration_role_chosen',
+	state='*')
 async def remember_role_choice(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 	role_id = int(call.data.split(':')[1])
@@ -54,8 +59,10 @@ async def remember_role_choice(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text='role_choice_complete', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	text='role_choice_complete',
+	state='*')
 async def send_request(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 	data = await state.get_data()
@@ -132,8 +139,10 @@ async def send_request(call: types.CallbackQuery, state: FSMContext):
 	await state.update_data(data=data)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='registration_request_accept', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	text_startswith='registration_request_accept',
+	state='*')
 async def accept_registration_request(call: types.CallbackQuery, state: FSMContext):
 	request_id = int(call.data.split(':')[1])
 	request = crud.table_registration_request.get_registration_request(request_id)
@@ -158,8 +167,10 @@ async def accept_registration_request(call: types.CallbackQuery, state: FSMConte
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='registration_request_cancel', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	text_startswith='registration_request_cancel',
+	state='*')
 async def cancel_registration_request(call: types.CallbackQuery, state: FSMContext):
 	request_id = int(call.data.split(':')[1])
 
@@ -171,8 +182,10 @@ async def cancel_registration_request(call: types.CallbackQuery, state: FSMConte
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='blocking_user_accept', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	text_startswith='blocking_user_accept',
+	state='*')
 async def blocking_user_accept(call: types.CallbackQuery, state: FSMContext):
 	request_id = int(call.data.split(':')[1])
 	request = crud.table_registration_request.get_registration_request(request_id)
@@ -192,8 +205,10 @@ async def blocking_user_accept(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
-						   text_startswith='blocking_user_cancel', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	text_startswith='blocking_user_cancel',
+	state='*')
 async def blocking_user_cancel(call: types.CallbackQuery, state: FSMContext):
 	request_id = int(call.data.split(':')[1])
 	request = crud.table_registration_request.get_registration_request(request_id)

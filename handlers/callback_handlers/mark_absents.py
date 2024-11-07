@@ -14,7 +14,11 @@ import keyboards
 from utils.create_absence_report import create_report
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text_startswith='class', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='class')
 async def choose_absents(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 	class_id = int(call.data.split(':')[1])
@@ -47,7 +51,11 @@ async def choose_absents(call: types.CallbackQuery, state: FSMContext):
 		)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text_startswith='student', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='student')
 async def choose_reason(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 	student_id = int(call.data.split(':')[1])
@@ -77,7 +85,11 @@ async def choose_reason(call: types.CallbackQuery, state: FSMContext):
 		)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text_startswith='reason', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text_startswith='reason')
 async def save_absent(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 	reason_id = int(call.data.split(':')[1])
@@ -101,7 +113,11 @@ async def save_absent(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='to_classes', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text='to_classes')
 async def to_classes(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 
@@ -118,7 +134,11 @@ async def to_classes(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='to_students', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text='to_students')
 async def to_students(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 
@@ -136,8 +156,11 @@ async def to_students(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='mark_absents_complete',
-						   state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text='mark_absents_complete')
 async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 
@@ -190,7 +213,11 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 	)
 
 
-@dp.callback_query_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), text='mark_absents_cancel', state='*')
+@dp.callback_query_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	state='*',
+	text='mark_absents_cancel')
 async def mark_absents_cancel(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 
