@@ -184,7 +184,7 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 				date=datetime.date.today()
 			)
 
-		await call.message.edit_text(f'Вы успешно отметили {class_.class_name} класс!')
+		await call.message.edit_text(f'Отмечен {class_.class_name} класс')
 
 		if not crud.table_class.not_marked_classes(datetime.date.today()):
 			for admin_employee_id in crud.table_employee_role.get_admins():
