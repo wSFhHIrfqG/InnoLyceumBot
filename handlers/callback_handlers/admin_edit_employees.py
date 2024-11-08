@@ -28,8 +28,7 @@ async def show_employee(call: types.CallbackQuery, state: FSMContext):
 		roles.append(role)
 	pretty_roles_string = ', '.join(role.title for role in roles)
 
-	text = f'<b>Идентификатор:</b> <code>{employee_id}</code>\n\n' \
-		   f'<b>ФИО:</b> {employee.fullname}\n' \
+	text = f'<b>ФИО:</b> {employee.fullname}\n' \
 		   f'<b>Должности:</b> {pretty_roles_string}\n' \
 		   f'<b>Telegram ID:</b> <code>{employee.telegram_id}</code>\n' \
 		   f'<b>Профиль:</b> {pretty_username}'
