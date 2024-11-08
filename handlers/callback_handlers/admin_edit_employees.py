@@ -67,7 +67,7 @@ async def delete_employee(call: types.CallbackQuery, state: FSMContext):
 	await bot.send_message(
 		chat_id=employee_telegram_id,
 		text='Администраторы удалили вас из списка сотрудников',
-		reply_markup=types.ReplyKeyboardRemove
+		reply_markup=types.ReplyKeyboardRemove()
 	)
 
 

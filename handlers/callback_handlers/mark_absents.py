@@ -203,11 +203,14 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 		# Отправляем информацию в группу
 		if config.GROUP_ID is not None:
 			all_in_class = crud.table_student.count_students_by_class(class_id)
+			students_in_class = all_in_class - len(absents_in_class)
 
 			absents_string = ', '.join(pretty_absents_with_reason)
 			text = f'{from_employee.fullname} отправил(-а) информацию по <b>{class_.class_name}</b> классу\n\n' \
-				   f'Учеников в классе: <b>{all_in_class - len(absents_in_class)} из {all_in_class}</b>\n\n' \
-				   f'Отсутствующие: {absents_string}'
+				   f'Учеников в классе: <b>{students_in_class} из {all_in_class}</b>'
+			if students_in_class != all_in_class:  # В классе есть отсутствующие
+				text += f'\n\nОтсутствующие: {absents_string}'
+
 			try:
 				logger.info('Отправляем информацию по %s классу' % class_.class_name)
 				await bot.send_message(chat_id=config.GROUP_ID, text=text)

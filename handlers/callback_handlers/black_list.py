@@ -40,7 +40,7 @@ async def unlock_user(call: types.CallbackQuery, state: FSMContext):
 	username = user.username
 	pretty_username = 'Не известен' if username is None else f'@{username}'
 
-	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
+	text = f'<b>Пользователь:</b> {new_i + 1} ({n})\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
 		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
@@ -71,7 +71,7 @@ async def bl_hard_left(call: types.CallbackQuery, state: FSMContext):
 	username = user.username
 	pretty_username = 'Не известен' if username is None else f'@{username}'
 
-	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
+	text = f'<b>Пользователь:</b> {new_i + 1} ({n})\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
 		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
@@ -102,7 +102,7 @@ async def bl_left(call: types.CallbackQuery, state: FSMContext):
 	username = user.username
 	pretty_username = 'Не известен' if username is None else f'@{username}'
 
-	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
+	text = f'<b>Пользователь:</b> {new_i + 1} ({n})\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
 		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
@@ -133,7 +133,7 @@ async def bl_right(call: types.CallbackQuery, state: FSMContext):
 	username = user.username
 	pretty_username = 'Не известен' if username is None else f'@{username}'
 
-	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
+	text = f'<b>Пользователь:</b> {new_i + 1} ({n})\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
 		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
@@ -164,7 +164,7 @@ async def bl_hard_right(call: types.CallbackQuery, state: FSMContext):
 	username = user.username
 	pretty_username = 'Не известен' if username is None else f'@{username}'
 
-	text = f'<b>Пользователь:</b> {new_i + 1}/{n}\n\n' \
+	text = f'<b>Пользователь:</b> {new_i + 1} ({n})\n' \
 		   f'<b>ФИО:</b> {user.fullname}\n' \
 		   f'<b>Профиль:</b> {pretty_username}\n' \
 		   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
@@ -192,7 +192,7 @@ async def bl_close(call: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(
 	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
 	user_registered=True,
-	state=UserStates.admin_menu,
+	state='*',
 	text_startswith='bl_close')
 async def bl_close(call: types.CallbackQuery, state: FSMContext):
 	await call.message.delete()

@@ -17,7 +17,8 @@ async def send_support_message(message: types.Message, state=FSMContext):
 	if message.text == '❌ Отмена':
 		await bot.send_message(
 			chat_id=message.from_user.id,
-			text='Отменено'
+			text='Отменено',
+			reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
 		)
 	else:
 		support_message = message.text
@@ -39,6 +40,5 @@ async def send_support_message(message: types.Message, state=FSMContext):
 	await state.set_state(UserStates.main_menu)
 	await bot.send_message(
 		chat_id=message.from_user.id,
-		text='Вы в главном меню',
-		reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
+		text='Вы в главном меню'
 	)

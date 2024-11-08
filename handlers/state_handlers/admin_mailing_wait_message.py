@@ -17,7 +17,8 @@ async def mail_message(message: types.Message, state=FSMContext):
 	if message.text == '❌ Отмена':
 		await bot.send_message(
 			chat_id=message.from_user.id,
-			text='Отменено'
+			text='Отменено',
+			reply_markup=keyboards.reply.admin.admin_markup()
 		)
 	else:
 		for telegram_id in crud.table_employee.get_all_unique_telegram_id():
@@ -30,11 +31,13 @@ async def mail_message(message: types.Message, state=FSMContext):
 				chat_id=telegram_id,
 				text=text
 			)
-		await message.reply(text='Сообщение отправлено')
+		await message.reply(
+			text='Сообщение отправлено',
+			reply_markup=keyboards.reply.admin.admin_markup()
+		)
 
 	await state.set_state(UserStates.admin_menu)
 	await bot.send_message(
 		chat_id=message.from_user.id,
-		text='Выберите действие',
-		reply_markup=keyboards.reply.admin.admin_markup()
+		text='Выберите действие'
 	)
