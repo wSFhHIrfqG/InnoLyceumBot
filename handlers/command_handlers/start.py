@@ -8,7 +8,10 @@ from database import crud
 import keyboards
 
 
-@dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), commands=['start'], state='*')
+@dp.message_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	commands=['start'],
+	state='*')
 async def start(message: types.Message, state=FSMContext):
 	await state.set_state(UserStates.start)
 	if crud.table_employee.get_employee_by_telegram_id(message.from_user.id):

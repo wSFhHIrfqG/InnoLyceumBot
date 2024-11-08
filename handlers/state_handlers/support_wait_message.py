@@ -8,30 +8,37 @@ from states.user_states import UserStates
 from config_data import config
 
 
-@dp.message_handler(ChatTypeFilter(chat_type=types.ChatType.PRIVATE), content_types=['text'],
-					state=UserStates.support_wait_message)
+@dp.message_handler(
+	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
+	user_registered=True,
+	content_types=['text'],
+	state=UserStates.support_wait_message)
 async def send_support_message(message: types.Message, state=FSMContext):
-	support_message = message.text
-	from_username = message.from_user.username
+	if message.text == '❌ Отмена':
+		await bot.send_message(
+			chat_id=message.from_user.id,
+			text='Отменено',
+			reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
+		)
+	else:
+		support_message = message.text
 
-	await state.set_state(UserStates.main_menu)
+		await state.set_state(UserStates.main_menu)
 
-	text_to_admins = f'📬 Получено новое сообщение\n\n' \
-					 f'<b>От:</b> @{from_username}\n' \
-					 f'<b>Текст:</b> {support_message}'
+		text_to_admins = f'📬 Получено новое сообщение\n\n' \
+						 f'<b>Текст:</b> {support_message}'
 
-	await bot.send_message(chat_id=config.SUPER_ADMIN_TELEGRAM_ID, text=text_to_admins)
-	if config.SUPER_ADMIN_TELEGRAM_ID != config.DEVELOPER_TELEGRAM_ID:
-		await bot.send_message(chat_id=config.DEVELOPER_TELEGRAM_ID, text=text_to_admins)
+		await bot.send_message(chat_id=config.SUPER_ADMIN_TELEGRAM_ID, text=text_to_admins)
+		if config.SUPER_ADMIN_TELEGRAM_ID != config.DEVELOPER_TELEGRAM_ID:
+			await bot.send_message(chat_id=config.DEVELOPER_TELEGRAM_ID, text=text_to_admins)
 
-	await message.reply(
-		text='Ваше сообщение отправлено',
-		reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
-	)
+		await message.reply(
+			text='Ваше сообщение отправлено',
+			reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
+		)
 
 	await state.set_state(UserStates.main_menu)
 	await bot.send_message(
 		chat_id=message.from_user.id,
-		text='Вы в главном меню',
-		reply_markup=keyboards.reply.start.start_markup(message.from_user.id)
+		text='Вы в главном меню'
 	)

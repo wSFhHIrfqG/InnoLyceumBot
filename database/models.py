@@ -20,7 +20,7 @@ class Role(Base):
 
 	role_id = Column(Integer, primary_key=True, unique=True, nullable=False)
 	title = Column(VARCHAR(50), nullable=False)
-	description = Column(String, nullable=False)
+	description = Column(String)
 
 	employee = relationship('EmployeeRole', back_populates='about_role')
 
@@ -36,12 +36,14 @@ class Employee(Base):
 		employee_id: Идентификатор сотрудника
 		telegram_id: Telegram id сотрудника
 		fullname: ФИО сотрудника
+		username: Никнейм телеграм
 	"""
 	__tablename__ = 'Employee'
 
 	employee_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	telegram_id = Column(Integer, nullable=False)
 	fullname = Column(String, nullable=False)
+	username = Column(String)
 
 	role = relationship('EmployeeRole', back_populates='employee')
 
@@ -91,7 +93,7 @@ class RegistrationRequest(Base):
 	request_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	telegram_id = Column(Integer, nullable=False)
 	from_name = Column(String, nullable=False)
-	from_username = Column(VARCHAR(50), nullable=False)
+	from_username = Column(VARCHAR(50))
 	roles = Column(String, nullable=False)
 
 	def __str__(self):
@@ -133,9 +135,9 @@ class Student(Base):
 	__tablename__ = 'Student'
 
 	student_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
-	surname = Column(VARCHAR(50), nullable=False)
-	name = Column(VARCHAR(50), nullable=False)
-	middlename = Column(VARCHAR(50))
+	surname = Column(String)
+	name = Column(String)
+	middlename = Column(String)
 	class_id = Column(Integer, ForeignKey('Class.class_id'), nullable=False)
 
 	student = relationship('Class', back_populates='student_class')
@@ -180,7 +182,7 @@ class AbsenceReason(Base):
 
 	reason_id = Column(Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
 	title = Column(VARCHAR(100), nullable=False)
-	description = Column(String, nullable=False)
+	description = Column(String)
 	in_lyceum = Column(Boolean, nullable=False)
 
 	reason = relationship('Absent', back_populates='absent')
