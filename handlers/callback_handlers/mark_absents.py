@@ -3,12 +3,13 @@ import datetime
 from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher import FSMContext
 from aiogram import types
-from aiogram.utils.exceptions import ChatNotFound
+import aiogram.utils.exceptions
 from docx.opc.exceptions import PackageNotFoundError
 
 from loader import dp, bot
 from bot_logging import logger
 from states.user_states import UserStates
+from config_data import config
 from database import crud
 import keyboards
 from utils.create_absence_report import create_report
@@ -171,34 +172,77 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 	data.pop(message_id, None)
 	await state.update_data(data=data)
 
+	from_employee = crud.table_employee.get_employee_by_telegram_id(call.from_user.id)
+
 	class_ = crud.table_class.get_class(class_id)
-	if class_.last_date == datetime.date.today():
+	if class_.last_date == datetime.date.today():  # Класс уже был отмечен ранее
 		await call.message.edit_text(f'{class_.class_name} класс уже был отмечен ранее')
 	else:
 		crud.table_class.set_last_date(class_id=class_id, date=datetime.date.today())
 
+		pretty_absents_with_reason = []
 		for absent_dict in absents_in_class:
+			reason_id = absent_dict.get('reason_id')
+			student_id = absent_dict.get('student_id')
+			date = datetime.date.today()
+
 			crud.table_absent.add_absent(
-				reason_id=absent_dict.get('reason_id'),
-				student_id=absent_dict.get('student_id'),
-				date=datetime.date.today()
+				reason_id=reason_id,
+				student_id=student_id,
+				date=date
 			)
+
+			reason = crud.table_absence_reason.get_reason(reason_id)
+			absent = crud.table_absent.get_absent(student_id=student_id, date=date)
+			student = crud.table_student.get_student(absent.student_id)
+
+			pretty_absents_with_reason.append(f'{student.surname} {student.name} ({reason.title})')
 
 		await call.message.edit_text(f'Отмечен {class_.class_name} класс')
 
-		if not crud.table_class.not_marked_classes(datetime.date.today()):
+		# Отправляем информацию в группу
+		if config.GROUP_ID is not None:
+			all_in_class = crud.table_student.count_students_by_class(class_id)
+
+			absents_string = ', '.join(pretty_absents_with_reason)
+			text = f'{from_employee.fullname} отправил(-а) информацию по <b>{class_.class_name}</b> классу\n\n' \
+				   f'Учеников в классе: <b>{all_in_class - len(absents_in_class)} из {all_in_class}</b>\n\n' \
+				   f'Отсутствующие: {absents_string}'
+			try:
+				logger.info('Отправляем информацию по %s классу' % class_.class_name)
+				await bot.send_message(chat_id=config.GROUP_ID, text=text)
+			except aiogram.utils.exceptions.ChatNotFound:
+				logger.exception(
+					'Не удалось отправить информацию по %s классу в группу:'
+					'чат не найден {group_id: %d}' %
+					(class_.class_name, config.GROUP_ID)
+				)
+			except aiogram.utils.exceptions.BadRequest:
+				logger.exception(
+					'Не удалось отправить информацию по %s классу в группу:'
+					'нет разрешений писать в группу {group_id: %d}' %
+					(class_.class_name, config.GROUP_ID)
+				)
+			except aiogram.utils.exceptions.BotKicked:
+				logger.exception(
+					'Не удалось отправить информацию по %s классу в группу:'
+					'бот исключен из группы {group_id: %d}' %
+					(class_.class_name, config.GROUP_ID)
+				)
+			else:
+				logger.info('Информация по %s классу успешно отправлена' % class_.class_name)
+
+		if not crud.table_class.not_marked_classes(datetime.date.today()):  # Все классы отмечены
 			for admin_employee_id in crud.table_employee_role.get_admins():
 				admin = crud.table_employee.get_employee(employee_id=admin_employee_id)
 
 				try:
-					try:
-						report_file_path = create_report(datetime.date.today())  # Создаем отчет
-					except PackageNotFoundError:  # Не найден шаблон отчета
-						return
-					else:  # Отправляем отчет админам
-						with open(report_file_path, 'rb') as file:
-							await bot.send_document(admin.telegram_id, document=file, caption='Все классы отмечены')
-				except ChatNotFound:  # Чат админа не найден
+					report_file_path = create_report(datetime.date.today())  # Создаем отчет
+					with open(report_file_path, 'rb') as file:
+						await bot.send_document(admin.telegram_id, document=file, caption='Все классы отмечены')
+				except PackageNotFoundError:  # Не найден шаблон отчета
+					return
+				except aiogram.utils.exceptions.ChatNotFound:  # Чат админа не найден
 					logger.warning(
 						'Отчет не был отправлен: чат админа не найден '
 						'{employee_id: %s, telegram_id: %s, fullname: %s %s %s}' %
