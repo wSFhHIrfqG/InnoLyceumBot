@@ -14,16 +14,10 @@ import keyboards
 	state='*')
 async def support(message: types.Message, state=FSMContext):
 	await state.set_state(UserStates.support_wait_message)
-
-	await bot.send_message(
-		chat_id=message.from_user.id,
-		text='Здесь вы можете оставить свои идеи и предложения',
-		reply_markup=types.ReplyKeyboardRemove()
-	)
 	await bot.send_message(
 		chat_id=message.from_user.id,
 		text='Введите текст обращения',
-		reply_markup=keyboards.inline.support.cancel_markup()
+		reply_markup=keyboards.reply.support.cancel_markup()
 	)
 
 

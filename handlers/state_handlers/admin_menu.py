@@ -87,13 +87,8 @@ async def admin_action_chosen(message: types.Message, state=FSMContext):
 		await state.set_state(UserStates.admin_mailing_wait_message)
 		await bot.send_message(
 			chat_id=message.from_user.id,
-			text='Сообщение будет отправлено всем пользователям бота',
-			reply_markup=types.ReplyKeyboardRemove()
-		)
-		await bot.send_message(
-			chat_id=message.from_user.id,
 			text='Введите текст рассылки',
-			reply_markup=keyboards.inline.admin_mailing.cancel_markup()
+			reply_markup=keyboards.reply.admin_mailing.cancel_markup()
 		)
 
 	elif message.text == 'Главное меню':
