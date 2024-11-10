@@ -73,9 +73,12 @@ async def admin_action_chosen(message: types.Message, state=FSMContext):
 			return
 
 		user = blocked_users[0]
+		username = user.username
+		pretty_username = 'Не известен' if username is None else f'@{username}'
+
 		text = f'<b>Пользователь:</b> {1}/{n}\n\n' \
 			   f'<b>ФИО:</b> {user.fullname}\n' \
-			   f'<b>Профиль:</b> {user.username}\n' \
+			   f'<b>Профиль:</b> {pretty_username}\n' \
 			   f'<b>Telegram ID:</b> <code>{user.telegram_id}</code>'
 		await bot.send_message(
 			chat_id=message.from_user.id,
