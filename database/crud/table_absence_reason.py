@@ -34,6 +34,9 @@ def load_reasons():
 							 in_lyceum=False),
 		models.AbsenceReason(title="УТС в Лицее", description="В Лицее на сборах или подготовке",
 							 in_lyceum=True),
+		models.AbsenceReason(title="Мероприятия вне лицея",
+							 description="Конференции, соревнования, мероприятия вне лицея",
+							 in_lyceum=False),
 		models.AbsenceReason(title="Другое", description="Причина не известна", in_lyceum=False),
 	]
 	session.query(models.AbsenceReason).delete()  # Очищаем таблицу
