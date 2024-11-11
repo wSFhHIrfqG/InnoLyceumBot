@@ -1,3 +1,4 @@
+from config_data.absence_reasons import ABSENCE_REASONS
 from database import db
 from database import models
 
@@ -18,29 +19,11 @@ def load_reasons():
 	При использовании таблица со старыми причинами ОЧИЩАЕТСЯ.
 	"""
 	session = db.SessionLocal()
-	reasons = [
-		models.AbsenceReason(title="ОРЗ, ОРВИ, ГРИПП", description="ОРЗ, ОРВИ, грипп и аналогичные болезни",
-							 in_lyceum=False),
-		models.AbsenceReason(title="Болеет в Лицее", description="До приезда родителей или в изоляторе",
-							 in_lyceum=True),
-		models.AbsenceReason(title="По заявлению", description="По заявлению или уважительной причине",
-							 in_lyceum=False),
-		models.AbsenceReason(title="Олимпиада", description="Участи в олимпиадах, конкурсах и т.д.",
-							 in_lyceum=False),
-		models.AbsenceReason(title="Олимпиада в Лицее",
-							 description="Участи в олимпиадах, конкурсах и т.д. но находится в Лицее",
-							 in_lyceum=True),
-		models.AbsenceReason(title="УТС", description="Уехал на сборы",
-							 in_lyceum=False),
-		models.AbsenceReason(title="УТС в Лицее", description="В Лицее на сборах или подготовке",
-							 in_lyceum=True),
-		models.AbsenceReason(title="Мероприятия вне лицея",
-							 description="Конференции, соревнования, мероприятия вне лицея",
-							 in_lyceum=False),
-		models.AbsenceReason(title="Другое", description="Причина не известна", in_lyceum=False),
-	]
 	session.query(models.AbsenceReason).delete()  # Очищаем таблицу
-	session.add_all(reasons)  # Загружаем причины
+
+	for reason in ABSENCE_REASONS:  # Загружаем причины
+		session.add(models.AbsenceReason(**reason))
+
 	session.commit()
 
 
