@@ -1,11 +1,11 @@
-from aiogram.dispatcher.filters import ChatTypeFilter
-from aiogram.dispatcher import FSMContext
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import ChatTypeFilter
 
 import keyboards.inline.edit_employees
+from database import crud
 from loader import dp, bot
 from states.user_states import UserStates
-from database import crud
 
 
 @dp.callback_query_handler(
@@ -53,16 +53,15 @@ async def delete_employee(call: types.CallbackQuery, state: FSMContext):
 	crud.table_employee_role.delete_employee_roles(employee_id)
 
 	employees = crud.table_employee.get_all()
-
 	if len(employees):
 		text = 'Список сотрудников'
+		await call.message.edit_text(
+			text=text,
+			reply_markup=keyboards.inline.edit_employees.employees_markup(employees)
+		)
 	else:
 		text = 'Список сотрудников пуст'
-
-	await call.message.edit_text(
-		text=text,
-		reply_markup=keyboards.inline.edit_employees.employees_markup(employees)
-	)
+		await call.message.edit_text(text=text)
 
 	await bot.send_message(
 		chat_id=employee_telegram_id,
@@ -80,13 +79,13 @@ async def to_employees(call: types.CallbackQuery, state: FSMContext):
 	employees = crud.table_employee.get_all()
 	if len(employees):
 		text = 'Список сотрудников'
+		await call.message.edit_text(
+			text=text,
+			reply_markup=keyboards.inline.edit_employees.employees_markup(employees)
+		)
 	else:
 		text = 'Список сотрудников пуст'
-
-	await call.message.edit_text(
-		text=text,
-		reply_markup=keyboards.inline.edit_employees.employees_markup(employees)
-	)
+		await call.message.edit_text(text=text)
 
 
 @dp.callback_query_handler(
@@ -95,13 +94,8 @@ async def to_employees(call: types.CallbackQuery, state: FSMContext):
 	state=UserStates.admin_menu,
 	text='employees_close')
 async def employees_close(call: types.CallbackQuery, state: FSMContext):
-	await call.message.delete()
 	await state.set_state(UserStates.admin_menu)
-	await bot.send_message(
-		chat_id=call.from_user.id,
-		text='Выберите действие',
-		reply_markup=keyboards.reply.admin.admin_markup()
-	)
+	await call.message.edit_text(text='Список скрыт')
 
 
 @dp.callback_query_handler(
@@ -110,4 +104,4 @@ async def employees_close(call: types.CallbackQuery, state: FSMContext):
 	state='*',
 	text='employees_close')
 async def employees_close(call: types.CallbackQuery, state: FSMContext):
-	await call.message.delete()
+	await call.message.edit_text(text='Список скрыт')

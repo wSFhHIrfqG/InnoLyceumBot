@@ -9,7 +9,8 @@ def admin_markup():
 	btn4 = KeyboardButton(text='📓 Черный список')
 	btn5 = KeyboardButton(text='📢 Рассылка')
 	btn6 = KeyboardButton(text='Главное меню')
-	markup.row(btn1, btn2, btn3)
+	markup.row(btn1)
+	markup.row(btn2, btn3)
 	markup.row(btn4, btn5)
 	markup.row(btn6)
 	return markup

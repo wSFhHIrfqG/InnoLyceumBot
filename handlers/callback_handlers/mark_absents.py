@@ -1,17 +1,16 @@
 import datetime
 
-from aiogram.dispatcher.filters import ChatTypeFilter
-from aiogram.dispatcher import FSMContext
-from aiogram import types
 import aiogram.utils.exceptions
+from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import ChatTypeFilter
 from docx.opc.exceptions import PackageNotFoundError
 
-from loader import dp, bot
+import keyboards
 from bot_logging import logger
-from states.user_states import UserStates
 from config_data import config
 from database import crud
-import keyboards
+from loader import dp, bot
 from utils.create_absence_report import create_report
 
 
@@ -252,13 +251,6 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 						(admin.employee_id, admin.telegram_id, admin.surname, admin.name, admin.middlename)
 					)
 
-	await state.set_state(UserStates.main_menu)
-	await bot.send_message(
-		chat_id=call.from_user.id,
-		text='Вы в главном меню',
-		reply_markup=keyboards.reply.start.start_markup(call.from_user.id)
-	)
-
 
 @dp.callback_query_handler(
 	ChatTypeFilter(chat_type=types.ChatType.PRIVATE),
@@ -273,9 +265,3 @@ async def mark_absents_cancel(call: types.CallbackQuery, state: FSMContext):
 	await state.update_data(data=data)
 
 	await call.message.edit_text('Отменено')
-	await state.set_state(UserStates.main_menu)
-	await bot.send_message(
-		chat_id=call.from_user.id,
-		text='Вы в главном меню',
-		reply_markup=keyboards.reply.start.start_markup(call.from_user.id)
-	)

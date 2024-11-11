@@ -1,11 +1,11 @@
-from aiogram.dispatcher.filters import ChatTypeFilter
-from aiogram.dispatcher import FSMContext
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import ChatTypeFilter
 
+import keyboards
+from database import crud
 from loader import bot, dp
 from states.user_states import UserStates
-from database import crud
-import keyboards
 
 
 @dp.message_handler(
@@ -37,7 +37,3 @@ async def mail_message(message: types.Message, state=FSMContext):
 		)
 
 	await state.set_state(UserStates.admin_menu)
-	await bot.send_message(
-		chat_id=message.from_user.id,
-		text='Выберите действие'
-	)

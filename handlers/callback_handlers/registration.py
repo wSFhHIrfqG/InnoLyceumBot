@@ -1,12 +1,12 @@
-from aiogram.dispatcher.filters import ChatTypeFilter
-from aiogram.dispatcher import FSMContext
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import ChatTypeFilter
 
-from loader import bot, dp
-from states.user_states import UserStates
+import keyboards
 from config_data import config
 from database import crud
-import keyboards
+from loader import bot, dp
+from states.user_states import UserStates
 
 
 @dp.callback_query_handler(
@@ -126,7 +126,7 @@ async def send_request(call: types.CallbackQuery, state: FSMContext):
 	await call.message.delete_reply_markup()
 	await bot.send_message(
 		telegram_id,
-		text='📨 Ваша заявка отправлена и будет рассмотрена администраторами\n\n'
+		text=f'📨 Ваша заявка отправлена и будет рассмотрена администраторами\n\n'
 			 f'<b>ФИО:</b> {from_name}\n'
 			 f'<b>Должности:</b> {pretty_roles_string}'
 	)

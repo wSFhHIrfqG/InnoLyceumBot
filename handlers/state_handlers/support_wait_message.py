@@ -1,11 +1,11 @@
-from aiogram.dispatcher.filters import ChatTypeFilter
-from aiogram.dispatcher import FSMContext
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import ChatTypeFilter
 
 import keyboards.reply.start
+from config_data import config
 from loader import bot, dp
 from states.user_states import UserStates
-from config_data import config
 
 
 @dp.message_handler(
@@ -38,7 +38,3 @@ async def send_support_message(message: types.Message, state=FSMContext):
 		)
 
 	await state.set_state(UserStates.main_menu)
-	await bot.send_message(
-		chat_id=message.from_user.id,
-		text='Вы в главном меню'
-	)
