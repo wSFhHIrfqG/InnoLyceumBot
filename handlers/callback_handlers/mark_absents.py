@@ -4,7 +4,6 @@ import aiogram.utils.exceptions
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import ChatTypeFilter
-from docx.opc.exceptions import PackageNotFoundError
 
 import keyboards
 from bot_logging import logger
@@ -12,6 +11,7 @@ from config_data import config
 from database import crud
 from loader import dp, bot
 from utils.create_absence_report import create_report
+from utils.handle_absent_data import handle_absent_data
 
 
 @dp.callback_query_handler(
@@ -164,6 +164,7 @@ async def to_students(call: types.CallbackQuery, state: FSMContext):
 async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 	message_id = call.message.message_id
 
+	# Обращаемся к данным в fsm
 	data = await state.get_data()
 	message_data = data.get(message_id)
 	class_id = message_data.get('class_id')
@@ -171,79 +172,112 @@ async def mark_absents_complete(call: types.CallbackQuery, state: FSMContext):
 	data.pop(message_id, None)
 	await state.update_data(data=data)
 
+	# Сотрудник, отметивший класс
 	from_employee = crud.table_employee.get_employee_by_telegram_id(call.from_user.id)
 
+	# Класс, который отметили
 	class_ = crud.table_class.get_class(class_id)
+
+	# Сообщаем, если класс уже был отмечен ранее
 	if class_.last_date == datetime.date.today():  # Класс уже был отмечен ранее
 		await call.message.edit_text(f'{class_.class_name} класс уже был отмечен ранее')
-	else:
-		crud.table_class.set_last_date(class_id=class_id, date=datetime.date.today())
+		return
 
-		pretty_absents_with_reason = []
-		for absent_dict in absents_in_class:
-			reason_id = absent_dict.get('reason_id')
-			student_id = absent_dict.get('student_id')
-			date = datetime.date.today()
+	# Помечаем класс в бд, как отмеченный
+	crud.table_class.set_last_date(class_id=class_id, date=datetime.date.today())
 
-			crud.table_absent.add_absent(
-				reason_id=reason_id,
-				student_id=student_id,
-				date=date
-			)
+	# Классы, которые осталось отметить
+	not_marked_classes = crud.table_class.not_marked_classes(datetime.date.today())
 
-			reason = crud.table_absence_reason.get_reason(reason_id)
-			absent = crud.table_absent.get_absent(student_id=student_id, date=date)
-			student = crud.table_student.get_student(absent.student_id)
+	pretty_absents_with_reason = []  # Строки: отсутствующие с причиной
+	for absent_dict in absents_in_class:
+		reason_id = absent_dict.get('reason_id')
+		student_id = absent_dict.get('student_id')
+		date = datetime.date.today()
 
-			pretty_absents_with_reason.append(f'{student.surname} {student.name} ({reason.title})')
+		# Добавляем отсутствующего в бд
+		crud.table_absent.add_absent(
+			reason_id=reason_id,
+			student_id=student_id,
+			date=date
+		)
 
-		await call.message.edit_text(f'Отмечен {class_.class_name} класс')
+		reason = crud.table_absence_reason.get_reason(reason_id)
+		absent = crud.table_absent.get_absent(student_id=student_id, date=date)
+		student = crud.table_student.get_student(absent.student_id)
 
-		# Отправляем информацию в группу
-		if config.GROUP_ID is not None:
+		pretty_absents_with_reason.append(f'{student.surname} {student.name} ({reason.title})')
+
+	await call.message.edit_text(f'Отмечен {class_.class_name} класс')
+
+	if config.GROUP_ID is not None:
+		try:  # Отправляем информацию в группу
+			logger.info('Отправляем информацию по %s классу' % class_.class_name)
+
 			all_in_class = crud.table_student.count_students_by_class(class_id)
 			students_in_class = all_in_class - len(absents_in_class)
-
 			absents_string = ', '.join(pretty_absents_with_reason)
 			text = f'{from_employee.fullname} отправил(-а) информацию по <b>{class_.class_name}</b> классу\n\n' \
 				   f'Учеников в классе: <b>{students_in_class} из {all_in_class}</b>'
 			if students_in_class != all_in_class:  # В классе есть отсутствующие
 				text += f'\n\nОтсутствующие: {absents_string}'
+			await bot.send_message(chat_id=config.GROUP_ID, text=text)
+		except aiogram.utils.exceptions.ChatNotFound:
+			logger.exception(
+				'Не удалось отправить информацию по %s классу в группу:'
+				'чат не найден {group_id: %d}' %
+				(class_.class_name, config.GROUP_ID)
+			)
+		except aiogram.utils.exceptions.BadRequest:
+			logger.exception(
+				'Не удалось отправить информацию по %s классу в группу:'
+				'нет разрешений писать в группу {group_id: %d}' %
+				(class_.class_name, config.GROUP_ID)
+			)
+		except aiogram.utils.exceptions.BotKicked:
+			logger.exception(
+				'Не удалось отправить информацию по %s классу в группу:'
+				'бот исключен из группы {group_id: %d}' %
+				(class_.class_name, config.GROUP_ID)
+			)
+		else:
+			logger.info('Информация по %s классу успешно отправлена' % class_.class_name)
 
-			try:
-				logger.info('Отправляем информацию по %s классу' % class_.class_name)
+		if not not_marked_classes:  # Все классы отмечены
+			try:  # Отправляем информацию по количеству учеников в лицее в группу
+				logger.info('Отправляем информацию по количеству учеников в лицее в группу')
+
+				data = handle_absent_data()
+
+				text = 'Все классы отмечены\n' \
+					   'Всего в лицее: <b>%d из %d</b>' % (
+						   data.get('all_in_lyceum', '?'),
+						   data.get('all_students', '?')
+					   )
 				await bot.send_message(chat_id=config.GROUP_ID, text=text)
+
 			except aiogram.utils.exceptions.ChatNotFound:
 				logger.exception(
-					'Не удалось отправить информацию по %s классу в группу:'
-					'чат не найден {group_id: %d}' %
-					(class_.class_name, config.GROUP_ID)
-				)
+					'Не удалось отправить информацию по количеству учеников в лицее:'
+					'чат не найден')
 			except aiogram.utils.exceptions.BadRequest:
 				logger.exception(
-					'Не удалось отправить информацию по %s классу в группу:'
-					'нет разрешений писать в группу {group_id: %d}' %
-					(class_.class_name, config.GROUP_ID)
-				)
+					'Не удалось отправить информацию по количеству учеников в лицее:'
+					'нет разрешений писать в группу')
 			except aiogram.utils.exceptions.BotKicked:
 				logger.exception(
-					'Не удалось отправить информацию по %s классу в группу:'
-					'бот исключен из группы {group_id: %d}' %
-					(class_.class_name, config.GROUP_ID)
-				)
+					'Не удалось отправить информацию по количеству учеников в лицее:'
+					'бот исключен из группы')
 			else:
-				logger.info('Информация по %s классу успешно отправлена' % class_.class_name)
+				logger.info('Отправлена информация по количеству учеников в лицее')
 
-		if not crud.table_class.not_marked_classes(datetime.date.today()):  # Все классы отмечены
+			# Формируем отчет и отправляем в чат админам
 			for admin_employee_id in crud.table_employee_role.get_admins():
 				admin = crud.table_employee.get_employee(employee_id=admin_employee_id)
-
 				try:
 					report_file_path = create_report(datetime.date.today())  # Создаем отчет
 					with open(report_file_path, 'rb') as file:
 						await bot.send_document(admin.telegram_id, document=file, caption='Все классы отмечены')
-				except PackageNotFoundError:  # Не найден шаблон отчета
-					return
 				except aiogram.utils.exceptions.ChatNotFound:  # Чат админа не найден
 					logger.warning(
 						'Отчет не был отправлен: чат админа не найден '
