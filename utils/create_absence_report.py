@@ -1,16 +1,23 @@
 import datetime
 import os
 
-from docxtpl import DocxTemplate
 from docx.opc.exceptions import PackageNotFoundError
+from docxtpl import DocxTemplate
 
 from bot_logging import logger
-from database import crud
 from config_data import config
+from database import crud
+from utils.handle_absent_data import handle_absent_data
 
 
 def create_report(date: datetime.date):
+	logger.info('Формируем отчёт об отсутствующих')
+
 	date_s = datetime.date.strftime(date, '%d.%m.%Y')
+	output_dir = config.OUTPUT_ABSENT_REPORTS_DIR
+	if not os.path.exists(output_dir):
+		os.makedirs(output_dir)
+	fp = os.path.join(output_dir, f'{date_s}.docx')
 
 	doc = DocxTemplate(config.ABSENT_REPORT_TEMPLATE_FILE_PATH)
 
@@ -24,58 +31,35 @@ def create_report(date: datetime.date):
 	}
 	context['date'] = date_s
 
-	all_students = 0
-	all_in_lyceum = 0
+	data = handle_absent_data()
+	context['all_in_lyceum'] = data.get('all_in_lyceum')
+	context['all_students'] = data.get('all_students')
+
 	for class_ in crud.table_class.marked_classes(datetime.date.today()):
 		prefix = class_prefix.get(class_.class_name)
+		class_data = data.get(class_.class_id)
 
-		students_in_class = crud.table_student.count_students_by_class(class_.class_id)  # Учеников в классе
-		absent_students = 0  # Отсутствующие
-		absent_in = 0  # В лицее
-		absent_out = 0  # Вне лицея
-
-		all_in_lyceum += students_in_class
-		all_students += students_in_class
-
-		absents = []
-		for absent in crud.table_absent.absents_in_class(class_.class_id, datetime.date.today()):
-			absent_students += 1
-
-			absence_reason = crud.table_absence_reason.get_reason(absent.reason_id)
-			if absence_reason.in_lyceum:
-				absent_in += 1
-			else:
-				absent_out += 1
-				all_in_lyceum -= 1
-
-			student = crud.table_student.get_student(absent.student_id)
-
-			absents.append(f'{student.surname} {student.name} ({absence_reason.title})')
-
-		context[prefix] = students_in_class - absent_students  # Учеников присутствует
-		context[prefix + '_in'] = absent_in
-		context[prefix + '_out'] = absent_out
-		context[prefix + '_all'] = students_in_class
-		context[prefix + '_absent'] = ', '.join(absents)
-
-	context['all_in_lyceum'] = all_in_lyceum
-	context['all_students'] = all_students
+		context[prefix] = class_data.get('students_in_class') - class_data.get('absent_students')
+		context[prefix + '_in'] = class_data.get('absent_in')
+		context[prefix + '_out'] = class_data.get('absent_out')
+		context[prefix + '_all'] = class_data.get('students_in_class')
+		context[prefix + '_absent'] = ', '.join(class_data.get('absents_name_reason'))
 
 	try:
 		doc.render(context)
+		doc.save(fp)
 	except PackageNotFoundError as exc:
 		msg = 'Файл с шаблоном отчёта об отсутствующих не найден. ' \
 			  'Убедитесь, что тот существует и находится в папке input. ' \
 			  'Проверьте имя файла в переменных окружения.'
 		logger.exception(msg)
-		raise exc
-
-	output_dir = config.OUTPUT_ABSENT_REPORTS_DIR
-	if not os.path.exists(output_dir):
-		os.makedirs(output_dir)
-	fp = os.path.join(output_dir, f'{date_s}.docx')
-	doc.save(fp)
-	return fp
+	except PermissionError:
+		logger.exception(
+			'Ошибка доступа при сохранении отчёта об отсутствующих.'
+			'Попробуйте закрыть файл %s' % fp)
+	else:
+		logger.info('Отчёт об отсутствующих успешно сформирован')
+		return fp
 
 
 if __name__ == '__main__':
