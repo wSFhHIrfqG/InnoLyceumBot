@@ -1,11 +1,11 @@
-from aiogram.dispatcher.filters import ChatTypeFilter
-from aiogram.dispatcher import FSMContext
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import ChatTypeFilter
 
-from loader import dp, bot
-from states.user_states import UserStates
-from database import crud
 import keyboards
+from database import crud
+from loader import dp
+from states.user_states import UserStates
 
 
 @dp.callback_query_handler(
@@ -23,11 +23,6 @@ async def unlock_user(call: types.CallbackQuery, state: FSMContext):
 
 	if not n:
 		await call.message.edit_text(text='Черный список пуст')
-		await bot.send_message(
-			chat_id=call.from_user.id,
-			text='Выберите действие',
-			reply_markup=keyboards.reply.admin.admin_markup()
-		)
 		return
 
 	if i >= n:
@@ -180,13 +175,8 @@ async def bl_hard_right(call: types.CallbackQuery, state: FSMContext):
 	state=UserStates.admin_menu,
 	text_startswith='bl_close')
 async def bl_close(call: types.CallbackQuery, state: FSMContext):
-	await call.message.delete()
 	await state.set_state(UserStates.admin_menu)
-	await bot.send_message(
-		chat_id=call.from_user.id,
-		text='Выберите действие',
-		reply_markup=keyboards.reply.admin.admin_markup()
-	)
+	await call.message.edit_text(text='Список скрыт')
 
 
 @dp.callback_query_handler(
@@ -195,4 +185,4 @@ async def bl_close(call: types.CallbackQuery, state: FSMContext):
 	state='*',
 	text_startswith='bl_close')
 async def bl_close(call: types.CallbackQuery, state: FSMContext):
-	await call.message.delete()
+	await call.message.edit_text(text='Список скрыт')

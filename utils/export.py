@@ -12,11 +12,15 @@ def export_employees():
 	sheet = workbook.active
 	sheet.title = "employee"
 
-	data = [['ФИО', 'Должность', 'Telegram ID']]
+	data = [['ФИО', 'Должности', 'Telegram ID']]
 	for employee in crud.table_employee.get_all():
+		role_titles = []
 		for role_id in crud.table_employee_role.get_employee_roles(employee_id=employee.employee_id):
 			role = crud.table_role.get_role(role_id=role_id)
-			data.append([employee.fullname, role.title, employee.telegram_id])
+			role_titles.append(role.title)
+
+		pretty_roles_string = ', '.join(role_titles)
+		data.append([employee.fullname, pretty_roles_string, employee.telegram_id])
 
 	for row in data:
 		sheet.append(row)

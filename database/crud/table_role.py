@@ -1,6 +1,8 @@
+from sqlalchemy import func
+
+from config_data.roles import ROLES
 from database import db
 from database import models
-from sqlalchemy import func
 
 
 def get_all():
@@ -19,18 +21,11 @@ def load_employee_roles():
 	При использовании таблица со старыми ролями ОЧИЩАЕТСЯ.
 	"""
 	session = db.SessionLocal()
-	roles = [
-		models.Role(role_id=1, title='Директор', description='Директор лицея'),
-		models.Role(role_id=2, title='Заместитель директора', description='Заместитель директора'),
-		models.Role(role_id=3, title='Учитель', description='Учитель'),
-		models.Role(role_id=4, title='Заведующий библиотекой', description='Заведующий библиотекой'),
-		models.Role(role_id=5, title='Воспитатель', description='Воспитатель'),
-		models.Role(role_id=6, title='Классный руководитель', description='Классный руководитель'),
-		models.Role(role_id=7, title='Педагог-психолог', description='Педагог-психолог'),
-		models.Role(role_id=8, title='Тех. персонал', description='Технический персонал'),
-	]
 	session.query(models.Role).delete()  # Очищаем таблицу
-	session.add_all(roles)  # Загружаем роли
+
+	for role in ROLES:  # Загружаем роли
+		session.add(models.Role(**role))
+
 	session.commit()
 
 

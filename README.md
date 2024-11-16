@@ -2,7 +2,7 @@
 
 Бот помощник для ГАОУ "Лицей Иннополис"
 
-![Static Badge](https://img.shields.io/badge/release-v0.3.1-blue)
+![Static Badge](https://img.shields.io/badge/release-v0.3.2-blue)
 ![Static Badge](https://img.shields.io/badge/python-3.11-blue)
 
 ## Основные функции
@@ -32,6 +32,4 @@
 - Добавьте excel файл с данными об учениках в папку input проекта. Имя файла сохраните
   в переменных окружения
 - Проверьте шаблон отчета в папке input
-- Для корректной работы id каждой "роли" из таблицы Role должен быть добавлен в одну из групп ADMIN_ROLES,
-  TEACHER_ROLES, EMPLOYEE_ROLES  
-(См. InnoLyceumBot/config_data/roles; InnoLyceumBot/database/crud/table_role)
+- Отредактируйте роли и причины отсутствия (См. config_data/roles, config_data/absence_reasons) 
