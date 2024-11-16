@@ -1,10 +1,10 @@
-from aiogram.dispatcher.filters import ChatTypeFilter
-from aiogram.dispatcher import FSMContext
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import ChatTypeFilter
 
+import keyboards
 from loader import bot, dp
 from states.user_states import UserStates
-import keyboards
 
 
 @dp.message_handler(
@@ -29,5 +29,5 @@ async def support(message: types.Message, state=FSMContext):
 async def support_not_allowed(message: types.Message, state=FSMContext):
 	await bot.send_message(
 		chat_id=message.from_user.id,
-		text='Вы не зарегистрированы'
+		text='Для начала нужно зарегистрироваться'
 	)

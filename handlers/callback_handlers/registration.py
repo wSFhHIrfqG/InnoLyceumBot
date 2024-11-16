@@ -26,7 +26,11 @@ async def ask_name(call: types.CallbackQuery, state: FSMContext):
 	else:
 		text = 'Введите <b>ФИО</b> через пробел без дополнительных символов.\n' \
 			   '<b>Например:</b> Иванов Максим Игоревич'
-		await call.message.edit_text(text=text)
+		await call.message.delete_reply_markup()
+		await bot.send_message(
+			chat_id=call.from_user.id,
+			text=text
+		)
 		await state.set_state(UserStates.registration_wait_name)
 
 
