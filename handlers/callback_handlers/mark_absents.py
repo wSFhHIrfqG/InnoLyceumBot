@@ -45,8 +45,13 @@ async def choose_absents(call: types.CallbackQuery, state: FSMContext):
 			reply_markup=keyboards.inline.mark_absents.classes_markup(not_marked_classes_today))
 	else:
 		class_students = crud.table_student.get_students_by_class(class_id)
+		class_students_count = crud.table_student.count_students_by_class(class_id)
+		students_on_lesson_count = class_students_count - len(absents_in_class)
+
+		text = 'Выберите отсутствующих\n' \
+			   'В классе: <b>%d из %d</b>' % (students_on_lesson_count, class_students_count)
 		await call.message.edit_text(
-			text='Выберите отсутствующих',
+			text=text,
 			reply_markup=keyboards.inline.mark_absents.students_markup(class_students, absents_in_class)
 		)
 
@@ -73,7 +78,13 @@ async def choose_reason(call: types.CallbackQuery, state: FSMContext):
 		await state.update_data({message_id: message_data})
 
 		class_students = crud.table_student.get_students_by_class(class_id)
-		await call.message.edit_reply_markup(
+		class_students_count = crud.table_student.count_students_by_class(class_id)
+		students_on_lesson_count = class_students_count - len(absents_in_class)
+
+		text = 'Выберите отсутствующих\n' \
+			   'В классе: <b>%d из %d</b>' % (students_on_lesson_count, class_students_count)
+		await call.message.edit_text(
+			text=text,
 			reply_markup=keyboards.inline.mark_absents.students_markup(class_students, absents_in_class)
 		)
 	else:
@@ -107,8 +118,13 @@ async def save_absent(call: types.CallbackQuery, state: FSMContext):
 	await state.update_data({message_id: message_data})
 
 	class_students = crud.table_student.get_students_by_class(class_id)
+	class_students_count = crud.table_student.count_students_by_class(class_id)
+	students_on_lesson_count = class_students_count - len(absents_in_class)
+
+	text = 'Выберите отсутствующих\n' \
+		   'В классе: <b>%d из %d</b>' % (students_on_lesson_count, class_students_count)
 	await call.message.edit_text(
-		text='Выберите отсутствующих',
+		text=text,
 		reply_markup=keyboards.inline.mark_absents.students_markup(class_students, absents_in_class)
 	)
 
@@ -150,8 +166,13 @@ async def to_students(call: types.CallbackQuery, state: FSMContext):
 	await state.update_data({message_id: message_data})
 
 	class_students = crud.table_student.get_students_by_class(data.get('class_id'))
+	class_students_count = crud.table_student.count_students_by_class(class_id)
+	students_on_lesson_count = class_students_count - len(absents_in_class)
+
+	text = 'Выберите отсутствующих\n' \
+		   'В классе: <b>%d из %d</b>' % (students_on_lesson_count, class_students_count)
 	await call.message.edit_text(
-		text='Выберите отсутствующих',
+		text=text,
 		reply_markup=keyboards.inline.mark_absents.students_markup(class_students, absents_in_class)
 	)
 
